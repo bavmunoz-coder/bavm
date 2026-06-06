@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BAVM — Abogado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Syne:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --off-black: #111111; --charcoal: #1c1c1c; --dark-gray: #2a2a2a;
+      --mid-gray: #666; --light-gray: #aaa; --lighter-gray: #ccc;
+      --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.2);
+      --white: #f5f2ee; --accent: #c8b89a; --burgundy: #8B1A2E; --serif: 'Playfair Display', Georgia, serif; --sans: 'Syne', sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); color: var(--white); background: var(--black); overflow-x: hidden; line-height: 1.6; }
+    ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-track { background: var(--black); } ::-webkit-scrollbar-thumb { background: var(--dark-gray); }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 5%; height: 68px; background: rgba(10,10,10,0.94); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); transition: border-color 0.4s; }
+    nav.scrolled { border-color: var(--border-hover); }
+    .nav-logo { font-family: var(--serif); font-size: 1.1rem; color: var(--white); text-decoration: none; font-weight: 500; letter-spacing: 0; display: inline-flex; align-items: baseline; }
+    .nav-logo .logo-gold { color: var(--accent); font-style: normal; letter-spacing: 0.14em; }
+    .nav-logo .logo-burg { color: var(--burgundy); font-style: normal; letter-spacing: 0; margin-left: 0.01em; }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; list-style: none; }
+    .nav-links a { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links .nav-cta { color: var(--accent); border: 1px solid rgba(200,184,154,0.35); padding: 8px 22px; transition: all 0.3s; }
+    .nav-links .nav-cta:hover { background: var(--accent); color: var(--black); border-color: var(--accent); }
+    .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { width: 22px; height: 1px; background: var(--white); display: block; }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px 5% 80px; position: relative; overflow: hidden; }
+    .hero-bg-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--serif); font-size: clamp(14vw, 20vw, 22vw); color: rgba(255,255,255,0.025); white-space: nowrap; pointer-events: none; letter-spacing: -0.02em; line-height: 1; user-select: none; }
+    .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; padding-top: 20px; }
+    .hero-tag { font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); }
+    .hero-scroll-hint { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid-gray); display: flex; align-items: center; gap: 10px; }
+    .hero-scroll-hint::after { content: ''; width: 40px; height: 1px; background: var(--mid-gray); animation: sl 2s ease-in-out infinite; }
+    @keyframes sl { 0%,100%{width:40px;opacity:0.4} 50%{width:70px;opacity:1} }
+    .hero-main { margin-top: 15vh; }
+    .hero-pretitle { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid-gray); margin-bottom: 2rem; display: flex; align-items: center; gap: 16px; }
+    .hero-pretitle::before { content: ''; width: 50px; height: 1px; background: var(--mid-gray); }
+    .hero h1 { font-family: var(--serif); font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 400; line-height: 0.95; letter-spacing: -0.01em; color: var(--white); margin-bottom: 0.15em; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero-subtitle { font-size: clamp(0.85rem, 1.5vw, 1rem); color: var(--mid-gray); max-width: 500px; line-height: 1.9; margin: 2.5rem 0 3rem; font-weight: 300; }
+    .hero-actions { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+    .btn-main { display: inline-flex; align-items: center; gap: 12px; background: var(--white); color: var(--black); padding: 16px 40px; text-decoration: none; font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; transition: all 0.35s; font-family: var(--sans); }
+    .btn-main:hover { background: var(--accent); }
+    .btn-ghost { display: inline-flex; align-items: center; gap: 10px; color: var(--light-gray); text-decoration: none; font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; transition: color 0.3s; border-bottom: 1px solid transparent; padding-bottom: 2px; }
+    .btn-ghost:hover { color: var(--white); border-color: var(--mid-gray); }
+    .hero-divider { margin-top: 5rem; padding-top: 2.5rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
+    .hero-stats { display: flex; gap: 4rem; }
+    .stat-n { font-family: var(--serif); font-size: 2.4rem; color: var(--white); font-weight: 400; line-height: 1; }
+    .stat-l { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mid-gray); margin-top: 6px; }
+    .hero-note { font-size: 0.75rem; color: var(--mid-gray); max-width: 260px; line-height: 1.7; font-style: italic; font-family: var(--serif); }
+    .section-num { font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid-gray); margin-bottom: 1rem; }
+    .section-title { font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 400; line-height: 1.05; color: var(--white); }
+    .section-title em { font-style: italic; color: var(--accent); }
+    .section-sub { color: var(--mid-gray); font-size: 0.9rem; line-height: 1.9; max-width: 480px; margin-top: 1.5rem; font-weight: 300; }
+    #manifiesto { padding: 120px 5%; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: center; }
+    .manifiesto-quote { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.6rem); font-weight: 400; line-height: 1.3; color: var(--white); }
+    .manifiesto-quote em { font-style: italic; color: var(--accent); }
+    .manifiesto-text p { font-size: 0.9rem; color: var(--mid-gray); line-height: 1.9; margin-bottom: 1.2rem; font-weight: 300; }
+    .manifiesto-text p strong { color: var(--lighter-gray); font-weight: 400; }
+    .values-list { list-style: none; margin-top: 2rem; }
+    .values-list li { padding: 1rem 0; border-bottom: 1px solid var(--border); font-size: 0.82rem; letter-spacing: 0.08em; color: var(--light-gray); display: flex; align-items: center; justify-content: space-between; transition: color 0.3s; }
+    .values-list li:hover { color: var(--white); }
+    .values-list li::after { content: '→'; color: var(--accent); }
+    #servicios { padding: 120px 5%; border-top: 1px solid var(--border); }
+    .section-header { margin-bottom: 5rem; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-top: 4rem;
+    }
+    @media (max-width: 900px) {
+      .services-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .services-grid { grid-template-columns: 1fr; }
+    }
+    .service-card {
+      background: var(--black);
+      padding: 2.5rem 2rem 3rem;
+      transition: background 0.4s;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+    }
+    .service-card:nth-child(3n) { border-right: none; }
+    .service-card:nth-child(4), .service-card:nth-child(5), .service-card:nth-child(6) { border-bottom: none; }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(to right, var(--burgundy), var(--accent));
+      transition: width 0.5s ease;
+    }
+    .service-card:hover { background: var(--charcoal); }
+    .service-card:hover::before { width: 100%; }
+    .service-num { font-size: 0.6rem; letter-spacing: 0.3em; color: var(--dark-gray); margin-bottom: 2rem; }
+    .service-card h3 { font-family: var(--serif); font-size: 1.4rem; font-weight: 400; color: var(--white); margin-bottom: 1rem; line-height: 1.2; }
+    .service-card p { font-size: 0.82rem; color: var(--mid-gray); line-height: 1.8; font-weight: 300; }
+    .service-tag { display: inline-block; margin-top: 1.5rem; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(200,184,154,0.2); padding: 4px 12px; }
+    #sobre-mi { padding: 120px 5%; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 8rem; align-items: start; }
+    .about-image-col { position: sticky; top: 100px; }
+    .about-img-frame { width: 100%; aspect-ratio: 3/4; background: var(--charcoal); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .about-img-placeholder { font-family: var(--serif); font-size: 8rem; color: rgba(200,184,154,0.06); user-select: none; }
+    .about-img-caption { margin-top: 1.5rem; display: flex; justify-content: space-between; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid-gray); }
+    .about-body { margin-top: 2.5rem; }
+    .about-body p { font-size: 0.9rem; color: var(--mid-gray); line-height: 1.9; margin-bottom: 1.4rem; font-weight: 300; }
+    .about-body p strong { color: var(--lighter-gray); font-weight: 400; }
+    .edu-list { list-style: none; margin-top: 2.5rem; }
+    .edu-item { padding: 1.2rem 0; border-top: 1px solid var(--border); display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: start; }
+    .edu-year { font-size: 0.65rem; color: var(--mid-gray); letter-spacing: 0.12em; padding-top: 3px; min-width: 40px; }
+    .edu-title { font-size: 0.88rem; color: var(--white); margin-bottom: 3px; }
+    .edu-place { font-size: 0.78rem; color: var(--mid-gray); font-weight: 300; }
+    #contacto { padding: 120px 5% 100px; border-top: 1px solid var(--border); background: var(--off-black); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 8rem; margin-top: 5rem; align-items: start; }
+    .contact-manifesto { font-family: var(--serif); font-size: clamp(1.4rem, 2.5vw, 2.2rem); font-weight: 400; color: var(--white); line-height: 1.4; margin-bottom: 3rem; }
+    .contact-manifesto em { font-style: italic; color: var(--accent); }
+    .contact-row { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; border-bottom: 1px solid var(--border); transition: border-color 0.3s; }
+    .contact-row:hover { border-color: var(--border-hover); }
+    .contact-row-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mid-gray); }
+    .contact-row-value { font-size: 0.88rem; color: var(--light-gray); text-decoration: none; transition: color 0.3s; }
+    .contact-row-value:hover { color: var(--accent); }
+    .wa-btn { display: inline-flex; align-items: center; gap: 12px; background: #25D366; color: #fff; padding: 14px 32px; margin-top: 2.5rem; text-decoration: none; font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; font-family: var(--sans); font-weight: 500; transition: opacity 0.3s; }
+    .wa-btn:hover { opacity: 0.85; }
+    .wa-btn svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
+    .contact-form { display: flex; flex-direction: column; gap: 0; }
+    .form-field { border-bottom: 1px solid var(--border); transition: border-color 0.3s; }
+    .form-field:focus-within { border-color: var(--border-hover); }
+    .form-field label { display: block; font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid-gray); padding: 1.2rem 0 0.4rem; }
+    .form-field input, .form-field select, .form-field textarea { width: 100%; background: transparent; border: none; outline: none; color: var(--white); font-family: var(--sans); font-size: 0.9rem; padding: 0.4rem 0 1.2rem; font-weight: 300; -webkit-appearance: none; }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: var(--dark-gray); }
+    .form-field select { color: var(--light-gray); cursor: pointer; }
+    .form-field select option { background: #111; color: var(--white); }
+    .form-field textarea { resize: none; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+    .form-submit { margin-top: 2.5rem; background: var(--white); color: var(--black); border: none; padding: 18px; font-family: var(--sans); font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; cursor: pointer; transition: background 0.3s; width: 100%; }
+    .form-submit:hover { background: var(--accent); }
+    .form-success { display: none; margin-top: 1.5rem; text-align: center; font-family: var(--serif); font-style: italic; color: var(--accent); font-size: 1.1rem; }
+    footer { padding: 2rem 5%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.7rem; letter-spacing: 0.12em; color: var(--mid-gray); text-transform: uppercase; }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid-gray); text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s ease, transform 0.9s ease; }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    /* Arte generativo */
+    .hero-art { position: absolute; top: 0; right: 0; width: 70%; height: 100%; pointer-events: none; z-index: 0; }
+    .hero-top, .hero-main { position: relative; z-index: 1; }
+    /* Divisor artístico entre secciones */
+    .art-divider { width: 100%; height: 60px; overflow: hidden; display: block; }
+    .art-divider svg { width: 100%; height: 100%; }
+    @media (max-width: 900px) {
+      #manifiesto, #sobre-mi, .contact-grid { grid-template-columns: 1fr; gap: 4rem; }
+      .about-image-col { position: static; }
+      .hero-stats { gap: 2.5rem; }
+      .hero-divider { flex-direction: column; }
+      .form-row { grid-template-columns: 1fr; }
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0; background: rgba(10,10,10,0.98); padding: 2rem 5%; gap: 1.5rem; border-bottom: 1px solid var(--border); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#inicio" class="nav-logo"><em class="logo-gold">BAV</em><em class="logo-burg">M</em></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#manifiesto">Filosofia</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#sobre-mi">Perfil</a></li>
+    <li><a href="#contacto" class="nav-cta">Consultar</a></li>
+  </ul>
+  <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<section class="hero" id="inicio">
+  <!-- Elemento visual: líneas finas, espacio imposible — EQ · Matta · Dalí -->
+  <svg class="hero-art" viewBox="0 0 900 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <!-- Planos que se pliegan — Matta -->
+    <line x1="0" y1="580" x2="420" y2="120" stroke="rgba(200,184,154,0.04)" stroke-width="0.5"/>
+    <line x1="0" y1="620" x2="500" y2="80" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
+    <line x1="900" y1="520" x2="460" y2="140" stroke="rgba(200,184,154,0.04)" stroke-width="0.5"/>
+    <line x1="900" y1="480" x2="380" y2="160" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <line x1="180" y1="0" x2="640" y2="700" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
+    <line x1="240" y1="0" x2="780" y2="700" stroke="rgba(200,184,154,0.02)" stroke-width="0.5"/>
+    <!-- Figura humana de trazo único — EQ tattoo -->
+    <g stroke="rgba(200,184,154,0.07)" stroke-width="0.6" fill="none">
+      <!-- cabeza -->
+      <ellipse cx="720" cy="155" rx="28" ry="34"/>
+      <!-- cuello -->
+      <line x1="720" y1="189" x2="720" y2="218"/>
+      <!-- torso -->
+      <path d="M680 218 Q720 210 760 218 L768 340 Q720 360 672 340 Z"/>
+      <!-- columna vertebral -->
+      <line x1="720" y1="218" x2="720" y2="340" stroke-dasharray="4 6"/>
+      <!-- brazos -->
+      <path d="M680 240 Q640 290 628 360 Q624 380 632 390"/>
+      <path d="M760 240 Q800 300 810 370 Q814 388 806 396"/>
+      <!-- manos esquemáticas -->
+      <path d="M632 390 Q626 402 636 408 Q642 400 638 392"/>
+      <path d="M806 396 Q812 408 802 412 Q798 402 804 394"/>
+      <!-- piernas -->
+      <path d="M695 340 Q688 420 682 500 Q680 540 686 570"/>
+      <path d="M745 340 Q752 420 758 500 Q760 540 754 570"/>
+      <!-- costillas -->
+      <path d="M695 250 Q680 268 688 278" stroke-width="0.4"/>
+      <path d="M695 268 Q678 286 686 296" stroke-width="0.4"/>
+      <path d="M745 250 Q760 268 752 278" stroke-width="0.4"/>
+      <path d="M745 268 Q762 286 754 296" stroke-width="0.4"/>
+    </g>
+    <!-- Círculo onírico — Dalí -->
+    <circle cx="720" cy="155" r="70" stroke="rgba(139,26,46,0.05)" stroke-width="0.5" fill="none"/>
+    <circle cx="720" cy="155" r="110" stroke="rgba(200,184,154,0.03)" stroke-width="0.5" fill="none" stroke-dasharray="3 12"/>
+    <!-- Horizonte imposible — Dalí / Matta -->
+    <line x1="0" y1="480" x2="900" y2="380" stroke="rgba(200,184,154,0.035)" stroke-width="0.5"/>
+    <line x1="0" y1="500" x2="900" y2="400" stroke="rgba(200,184,154,0.02)" stroke-width="0.5"/>
+    <!-- Escala de profundidad -->
+    <line x1="50" y1="0" x2="50" y2="700" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+    <line x1="850" y1="0" x2="850" y2="700" stroke="rgba(255,255,255,0.015)" stroke-width="0.5"/>
+  </svg>
+  <div class="hero-top">
+    <span class="hero-tag">Abogado &mdash; Santiago, Chile</span>
+    <span class="hero-scroll-hint">Scroll</span>
+  </div>
+  <div class="hero-main">
+    <p class="hero-pretitle">Abogado &middot; Magister en Derecho &middot; UDP &mdash; U. de Valparaiso</p>
+    <h1>Tu problema<br/>legal tiene<br/><em>solucion.</em></h1>
+    <p class="hero-subtitle">Asesoria directa en derecho civil, laboral, de familia y corporativo. Cada consulta es tratada con rigor tecnico y absoluta reserva profesional.</p>
+    <div class="hero-actions">
+      <a href="https://wa.me/56973937184" class="btn-main" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.803 9.803 0 0 1-4.992-1.365l-.358-.212-3.71.89.906-3.624-.232-.374A9.803 9.803 0 0 1 2.182 12C2.182 6.56 6.56 2.182 12 2.182S21.818 6.56 21.818 12 17.44 21.818 12 21.818z"/></svg>
+        Consulta por WhatsApp
+      </a>
+      <a href="#contacto" class="btn-ghost">Enviar consulta &rarr;</a>
+    </div>
+    <div class="hero-divider">
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">Civil</div><div class="stat-l">Familia &middot; Laboral</div></div>
+        <div class="stat"><div class="stat-n">Penal</div><div class="stat-l">Corporativo</div></div>
+        <div class="stat"><div class="stat-n">Online</div><div class="stat-l">Todo Chile</div></div>
+      </div>
+      <p class="hero-note">"Primera consulta sin costo. Respuesta dentro de 24 horas habiles."</p>
+    </div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 30 Q150 8 300 30 Q450 52 600 30 Q750 8 900 30 Q1050 52 1200 30" stroke="rgba(200,184,154,0.08)" stroke-width="0.8" fill="none"/><path d="M0 38 Q200 18 400 38 Q600 58 800 38 Q1000 18 1200 38" stroke="rgba(139,26,46,0.06)" stroke-width="0.5" fill="none"/></svg></div>
+
+<section id="manifiesto" style="position:relative; overflow:hidden;">
+  <!-- Textura de fondo — planos Matta -->
+  <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;" aria-hidden="true" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 500">
+    <line x1="0" y1="0" x2="1200" y2="500" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <line x1="1200" y1="0" x2="0" y2="500" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="500" stroke="rgba(200,184,154,0.015)" stroke-width="0.5" stroke-dasharray="2 20"/>
+    <circle cx="600" cy="250" r="180" stroke="rgba(139,26,46,0.04)" stroke-width="0.5" fill="none"/>
+    <circle cx="600" cy="250" r="300" stroke="rgba(200,184,154,0.02)" stroke-width="0.5" fill="none" stroke-dasharray="1 15"/>
+  </svg>
+  <div style="position:relative;z-index:1;" class="reveal">
+    <p class="section-num">01 &mdash; Filosofia</p>
+    <blockquote class="manifiesto-quote">El derecho no es para juzgar,<br/>es para <em>proteger.</em></blockquote>
+  </div>
+  <div class="manifiesto-text reveal" style="position:relative;z-index:1;">
+    <p>La integridad profesional no significa seguir solo los casos "faciles". Significa comprometerse con cada persona que llega con un problema real, sin importar cuan complejo, delicado o socialmente incomodo sea.</p>
+    <p><strong>Ser un abogado integro implica ser moralmente abierto.</strong> Eso significa no imponer una escala de valores personal sobre los clientes, sino poner toda la capacidad tecnica al servicio de su defensa y sus derechos.</p>
+    <ul class="values-list">
+      <li>Confidencialidad absoluta</li>
+      <li>Sin prejuicios sobre el tipo de caso</li>
+      <li>Comunicacion directa y honesta</li>
+      <li>Estrategia legal clara desde el primer dia</li>
+      <li>Honorarios transparentes</li>
+    </ul>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 45 Q300 5 600 35 Q900 65 1200 20" stroke="rgba(200,184,154,0.07)" stroke-width="0.8" fill="none"/><line x1="0" y1="30" x2="1200" y2="30" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/></svg></div>
+
+<section id="servicios">
+  <div class="section-header reveal">
+    <p class="section-num">02 &mdash; Servicios</p>
+    <h2 class="section-title">Areas de<br/><em>practica</em></h2>
+    <p class="section-sub">Asesoria en materias que afectan a personas reales, con soluciones concretas.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal"><div class="service-num">01</div><h3>Derecho Civil</h3><p>Contratos, obligaciones, responsabilidad extracontractual, arrendamientos, cobro de deudas y conflictos patrimoniales entre particulares.</p><span class="service-tag">Civil &middot; Patrimonial</span></div>
+    <div class="service-card reveal"><div class="service-num">02</div><h3>Derecho de Familia</h3><p>Divorcios, tuicion, alimentos, regimenes de visita, acuerdos de union civil y regulacion de la relacion directa y regular con hijos.</p><span class="service-tag">Familia &middot; Infancia</span></div>
+    <div class="service-card reveal"><div class="service-num">03</div><h3>Derecho Laboral</h3><p>Despidos injustificados, vulneracion de derechos fundamentales, tutela laboral, accidentes del trabajo y asesoria a empleadores.</p><span class="service-tag">Laboral &middot; Tutela</span></div>
+    <div class="service-card reveal"><div class="service-num">04</div><h3>Derecho Corporativo</h3><p>Constitucion de empresas, pactos de accionistas, contratos comerciales y estructuracion societaria para startups y pymes.</p><span class="service-tag">Corporativo &middot; Empresas</span></div>
+    <div class="service-card reveal"><div class="service-num">05</div><h3>Defensa Penal</h3><p>Defensa en juicio oral, formalizacion de cargos, salidas alternativas y recursos de amparo. Todos tienen derecho a una defensa digna.</p><span class="service-tag">Penal &middot; Defensa</span></div>
+    <div class="service-card reveal"><div class="service-num">06</div><h3>Consulta en linea</h3><p>Primera consulta sin costo por videollamada o WhatsApp. Sin necesidad de desplazarse. Disponible para todo Chile.</p><span class="service-tag">Online &middot; Todo Chile</span></div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 20 L400 40 L800 15 L1200 38" stroke="rgba(200,184,154,0.06)" stroke-width="0.6" fill="none"/><path d="M0 35 L300 18 L700 45 L1200 22" stroke="rgba(139,26,46,0.04)" stroke-width="0.4" fill="none"/></svg></div>
+
+<section id="sobre-mi" style="position:relative;">
+  <!-- Trazo único EQ: líneas finas en esquina -->
+  <svg style="position:absolute;bottom:60px;right:5%;width:160px;height:200px;pointer-events:none;opacity:0.06;" aria-hidden="true" viewBox="0 0 160 200">
+    <path d="M80 10 Q90 30 80 50 Q70 70 80 90 Q90 110 80 130 Q70 150 80 170 Q90 190 80 200" stroke="#c8b89a" stroke-width="0.8" fill="none"/>
+    <path d="M60 40 Q80 50 100 40" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+    <path d="M55 80 Q80 95 105 80" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+    <path d="M58 120 Q80 132 102 120" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+    <ellipse cx="80" cy="10" rx="12" ry="14" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+  </svg>
+  <div class="about-image-col reveal">
+    <div class="about-img-frame">
+      <div class="about-img-placeholder">&#9878;</div>
+      <!-- Para agregar tu foto: reemplaza el div anterior con: <img src="foto.jpg" alt="BAVM, abogado" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;"> -->
+    </div>
+    <div class="about-img-caption"><span>BAVM &mdash; Abogado</span><span>Santiago, Chile</span></div>
+  </div>
+  <div>
+    <div class="reveal">
+      <p class="section-num">03 &mdash; Perfil</p>
+      <h2 class="section-title">Formacion y<br/><em>experiencia</em></h2>
+    </div>
+    <div class="about-body reveal">
+      <p>Abogado egresado de la <strong>Universidad Diego Portales</strong>, con estudios de Magister en Derecho en la Universidad de Valparaiso. Me desempeno en materias civiles, laborales, familiares y corporativas, con un enfoque riguroso y orientado a resultados concretos.</p>
+      <p>Creo que la asesoria legal debe ser accesible y sin barreras. Cada persona que llega a consulta, independientemente de su situacion, merece informacion clara, estrategia real y un trato respetuoso.</p>
+      <ul class="edu-list">
+        <li class="edu-item"><span class="edu-year">[XXXX]</span><div><div class="edu-title">Licenciatura en Ciencias Juridicas</div><div class="edu-place">Universidad Diego Portales</div></div></li>
+        <li class="edu-item"><span class="edu-year">[XXXX]</span><div><div class="edu-title">Magister en Derecho</div><div class="edu-place">Universidad de Valparaiso &middot; en curso</div></div></li>
+        <li class="edu-item"><span class="edu-year">Hoy</span><div><div class="edu-title">Ejercicio libre de la profesion</div><div class="edu-place">Santiago, Chile &mdash; presencial y remoto</div></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 30 Q200 55 400 25 Q600 0 800 30 Q1000 55 1200 30" stroke="rgba(200,184,154,0.06)" stroke-width="0.7" fill="none"/><circle cx="600" cy="30" r="3" fill="rgba(139,26,46,0.15)"/><circle cx="200" cy="38" r="2" fill="rgba(200,184,154,0.1)"/><circle cx="1000" cy="22" r="2" fill="rgba(200,184,154,0.1)"/></svg></div>
+
+<section id="contacto">
+  <div class="section-header reveal">
+    <p class="section-num">04 &mdash; Contacto</p>
+    <h2 class="section-title">Cuentame<br/><em>tu caso</em></h2>
+    <p class="section-sub">Primera consulta sin costo. Respuesta dentro de 24 horas habiles. Sin juicios previos.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p class="contact-manifesto">Cada situacion es <em>unica.</em><br/>Escucho antes de opinar.</p>
+      <div>
+        <div class="contact-row"><span class="contact-row-label">WhatsApp</span><a href="https://wa.me/56973937184" class="contact-row-value" target="_blank">+56 9 7393 7184</a></div>
+        <div class="contact-row"><span class="contact-row-label">Correo</span><a href="mailto:bavmunoz@gmail.com" class="contact-row-value">bavmunoz@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Ubicacion</span><span class="contact-row-value">Santiago, Chile</span></div>
+        <div class="contact-row"><span class="contact-row-label">Horario</span><span class="contact-row-value">Lun &ndash; Vie &middot; 9:00 &ndash; 19:00</span></div>
+      </div>
+      <a href="https://wa.me/56973937184" class="wa-btn" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.803 9.803 0 0 1-4.992-1.365l-.358-.212-3.71.89.906-3.624-.232-.374A9.803 9.803 0 0 1 2.182 12C2.182 6.56 6.56 2.182 12 2.182S21.818 6.56 21.818 12 17.44 21.818 12 21.818z"/></svg>
+        Escribir ahora
+      </a>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" id="contactForm" onsubmit="handleForm(event)">
+        <div class="form-row">
+          <div class="form-field"><label>Nombre</label><input type="text" name="nombre" placeholder="Tu nombre" required /></div>
+          <div class="form-field"><label>Correo</label><input type="email" name="email" placeholder="tu@correo.cl" required /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Telefono</label><input type="tel" name="tel" placeholder="+56 9 XXXX XXXX" /></div>
+          <div class="form-field"><label>Area legal</label><select name="area"><option value="">Seleccionar...</option><option>Derecho Civil</option><option>Derecho de Familia</option><option>Derecho Laboral</option><option>Derecho Corporativo</option><option>Defensa Penal</option><option>Otro / No se como clasificarlo</option></select></div>
+        </div>
+        <div class="form-field"><label>Tu situacion</label><textarea name="mensaje" placeholder="Cuentame brevemente que esta pasando. Sin tecnicismos, en tus palabras." required></textarea></div>
+        <button type="submit" class="form-submit">Enviar consulta</button>
+        <p class="form-success" id="formOk">&mdash; Consulta recibida. Te escribo pronto. &mdash;</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 BAVM &mdash; Abogado. Santiago, Chile.</p>
+  <div class="footer-links">
+    <a href="#">Privacidad</a>
+    <a href="https://www.linkedin.com/in/tuperfil" target="_blank">LinkedIn</a>
+    <a href="#inicio">&uarr; Inicio</a>
+  </div>
+</footer>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  });
+  const ro = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { setTimeout(() => e.target.classList.add('in'), i * 80); ro.unobserve(e.target); }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+  function handleForm(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Enviando...'; btn.disabled = true;
+    // Guardar consulta para el panel admin
+    const data = new FormData(e.target);
+    const consultas = JSON.parse(localStorage.getItem('bavm_consultas') || '[]');
+    consultas.push({
+      nombre: data.get('nombre'),
+      email: data.get('email'),
+      tel: data.get('tel') || '',
+      area: data.get('area') || '',
+      mensaje: data.get('mensaje'),
+      fecha: new Date().toLocaleDateString('es-CL', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+      read: false
+    });
+    localStorage.setItem('bavm_consultas', JSON.stringify(consultas));
+    setTimeout(() => {
+      e.target.style.opacity = '0.3'; e.target.style.pointerEvents = 'none';
+      document.getElementById('formOk').style.display = 'block';
+    }, 1000);
+  }
+
+  // Paralaje sutil del SVG hero — el trazo sigue al cursor como un dibujo vivo
+  const heroArt = document.querySelector('.hero-art');
+  if (heroArt) {
+    let tx = 0, ty = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', (e) => {
+      tx = (e.clientX / window.innerWidth - 0.5) * 18;
+      ty = (e.clientY / window.innerHeight - 0.5) * 10;
+    });
+    (function animate() {
+      cx += (tx - cx) * 0.05;
+      cy += (ty - cy) * 0.05;
+      heroArt.style.transform = `translate(${cx}px, ${cy}px)`;
+      requestAnimationFrame(animate);
+    })();
+  }
+</script>
+</body>
+</html>

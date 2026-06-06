@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BAVM — Abogado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Syne:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    :root{
+      --black:#0a0a0a;--charcoal:#1c1c1c;--border:rgba(255,255,255,0.08);
+      --border-hover:rgba(255,255,255,0.18);--white:#f5f2ee;--mid-gray:#666;
+      --light-gray:#aaa;--accent:#c8b89a;--burgundy:#8B1A2E;
+      --serif:'Playfair Display',Georgia,serif;--sans:'Syne',sans-serif;
+    }
+    html{scroll-behavior:smooth;}
+    body{
+      font-family:var(--sans);background:var(--black);color:var(--white);
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      padding:40px 20px;position:relative;overflow-x:hidden;
+    }
+    /* Fondo artístico */
+    .bg-art{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+    .card{
+      position:relative;z-index:1;
+      width:100%;max-width:480px;
+      display:flex;flex-direction:column;align-items:center;
+      gap:0;
+    }
+
+    /* Avatar */
+    .avatar{
+      width:88px;height:88px;border-radius:50%;
+      background:var(--charcoal);border:1px solid rgba(200,184,154,0.2);
+      display:flex;align-items:center;justify-content:center;
+      font-family:var(--serif);font-size:2rem;color:rgba(200,184,154,0.15);
+      margin-bottom:1.5rem;overflow:hidden;position:relative;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;}
+
+    /* Nombre */
+    .profile-name{
+      font-family:var(--serif);font-size:1.6rem;font-weight:400;
+      letter-spacing:0.04em;margin-bottom:0.4rem;text-align:center;
+    }
+    .profile-name .gold{color:var(--accent);}
+    .profile-name .burg{color:var(--burgundy);}
+    .profile-title{
+      font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;
+      color:var(--mid-gray);margin-bottom:0.6rem;text-align:center;
+    }
+    .profile-bio{
+      font-size:0.82rem;color:var(--light-gray);text-align:center;
+      line-height:1.7;max-width:340px;margin-bottom:2.5rem;font-weight:300;
+    }
+
+    /* Divisor */
+    .divider{
+      width:100%;height:1px;background:var(--border);
+      margin-bottom:2rem;position:relative;
+    }
+    .divider::after{
+      content:'';position:absolute;left:50%;top:-1px;transform:translateX(-50%);
+      width:40px;height:2px;
+      background:linear-gradient(to right,var(--burgundy),var(--accent));
+    }
+
+    /* Links */
+    .links{width:100%;display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;}
+    .link-item{
+      display:flex;align-items:center;gap:1rem;
+      padding:1rem 1.4rem;
+      border:1px solid var(--border);
+      text-decoration:none;color:var(--white);
+      transition:all 0.3s;position:relative;overflow:hidden;
+    }
+    .link-item::before{
+      content:'';position:absolute;left:0;top:0;bottom:0;
+      width:2px;background:linear-gradient(to bottom,var(--burgundy),var(--accent));
+      transform:scaleY(0);transition:transform 0.3s;transform-origin:bottom;
+    }
+    .link-item:hover{border-color:var(--border-hover);background:rgba(255,255,255,0.02);}
+    .link-item:hover::before{transform:scaleY(1);}
+    .link-icon{
+      width:36px;height:36px;min-width:36px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(200,184,154,0.06);
+    }
+    .link-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.5;flex-shrink:0;}
+    .link-icon svg.filled{fill:var(--accent);stroke:none;}
+    .link-text{flex:1;}
+    .link-label{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--light-gray);display:block;margin-bottom:2px;}
+    .link-desc{font-size:0.8rem;color:var(--mid-gray);font-weight:300;}
+    .link-arrow{font-size:0.75rem;color:var(--mid-gray);transition:color 0.3s;}
+    .link-item:hover .link-arrow{color:var(--accent);}
+
+    /* WhatsApp especial */
+    .link-wa{border-color:rgba(37,211,102,0.2);}
+    .link-wa .link-icon{background:rgba(37,211,102,0.06);}
+    .link-wa .link-icon svg{stroke:#25D366;}
+    .link-wa:hover{border-color:rgba(37,211,102,0.4);}
+    .link-wa .link-label{color:#25D366;}
+
+    /* Especialidades tags */
+    .tags{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2rem;}
+    .tag{
+      font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+      color:var(--mid-gray);border:1px solid var(--border);
+      padding:4px 10px;transition:all 0.3s;
+    }
+    .tag:hover{color:var(--accent);border-color:rgba(200,184,154,0.3);}
+
+    /* Footer */
+    .profile-footer{
+      font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
+      color:rgba(255,255,255,0.15);text-align:center;margin-top:1rem;
+    }
+    .profile-footer span{color:var(--burgundy);}
+  </style>
+</head>
+<body>
+
+<!-- Fondo artístico — mismas líneas que el sitio principal -->
+<svg class="bg-art" viewBox="0 0 800 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <line x1="0" y1="800" x2="500" y2="100" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
+  <line x1="800" y1="700" x2="300" y2="50" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+  <line x1="200" y1="0" x2="600" y2="900" stroke="rgba(200,184,154,0.02)" stroke-width="0.5"/>
+  <circle cx="400" cy="450" r="260" stroke="rgba(200,184,154,0.02)" stroke-width="0.5" fill="none" stroke-dasharray="2 18"/>
+  <circle cx="400" cy="450" r="160" stroke="rgba(139,26,46,0.03)" stroke-width="0.5" fill="none"/>
+  <!-- Figura EQ mínima -->
+  <g stroke="rgba(200,184,154,0.05)" stroke-width="0.6" fill="none">
+    <ellipse cx="680" cy="120" rx="18" ry="22"/>
+    <line x1="680" y1="142" x2="680" y2="165"/>
+    <path d="M658 165 Q680 158 702 165 L706 230 Q680 242 654 230 Z"/>
+    <path d="M658 182 Q636 210 630 250"/>
+    <path d="M702 182 Q724 212 728 252"/>
+  </g>
+</svg>
+
+<div class="card">
+
+  <!-- Avatar -->
+  <div class="avatar">
+    ⚖
+    <!-- Reemplaza con: <img src="foto.jpg" alt="BAVM"> -->
+  </div>
+
+  <!-- Nombre y título -->
+  <h1 class="profile-name"><span class="gold">BAV</span><span class="burg">M</span></h1>
+  <p class="profile-title">Abogado &mdash; Santiago, Chile</p>
+  <p class="profile-bio">Asesoría legal en derecho civil, laboral, familia y corporativo. Magíster en Derecho, Universidad de Valparaíso.</p>
+
+  <div class="divider"></div>
+
+  <!-- Especialidades -->
+  <div class="tags">
+    <span class="tag">Civil</span>
+    <span class="tag">Familia</span>
+    <span class="tag">Laboral</span>
+    <span class="tag">Corporativo</span>
+    <span class="tag">Penal</span>
+    <span class="tag">Online</span>
+  </div>
+
+  <!-- Links -->
+  <div class="links">
+
+    <a href="https://wa.me/56973937184" class="link-item link-wa" target="_blank">
+      <div class="link-icon">
+        <svg class="filled" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.803 9.803 0 0 1-4.992-1.365l-.358-.212-3.71.89.906-3.624-.232-.374A9.803 9.803 0 0 1 2.182 12C2.182 6.56 6.56 2.182 12 2.182S21.818 6.56 21.818 12 17.44 21.818 12 21.818z"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-label">WhatsApp</span>
+        <span class="link-desc">Consulta directa — primera consulta sin costo</span>
+      </div>
+      <span class="link-arrow">↗</span>
+    </a>
+
+    <a href="mailto:bavmunoz@gmail.com" class="link-item" target="_blank">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-label">Correo</span>
+        <span class="link-desc">bavmunoz@gmail.com</span>
+      </div>
+      <span class="link-arrow">↗</span>
+    </a>
+
+    <a href="index.html" class="link-item">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-label">Sitio web</span>
+        <span class="link-desc">Servicios, perfil y formulario de contacto</span>
+      </div>
+      <span class="link-arrow">↗</span>
+    </a>
+
+    <a href="https://www.linkedin.com/in/tuperfil" class="link-item" target="_blank">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-label">LinkedIn</span>
+        <span class="link-desc">Perfil profesional y trayectoria</span>
+      </div>
+      <span class="link-arrow">↗</span>
+    </a>
+
+    <a href="https://www.instagram.com/tuperfil" class="link-item" target="_blank">
+      <div class="link-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </div>
+      <div class="link-text">
+        <span class="link-label">Instagram</span>
+        <span class="link-desc">@tuperfil</span>
+      </div>
+      <span class="link-arrow">↗</span>
+    </a>
+
+  </div>
+
+  <p class="profile-footer">BAVM &nbsp;<span>·</span>&nbsp; Abogado &nbsp;<span>·</span>&nbsp; Santiago, Chile</p>
+
+</div>
+
+</body>
+</html>
