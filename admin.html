@@ -221,6 +221,9 @@
     <button class="tab-btn active" onclick="switchTab('resumen')">Resumen</button>
     <button class="tab-btn" onclick="switchTab('consultas')">Consultas</button>
     <button class="tab-btn" onclick="switchTab('asistente')">Asistente IA</button>
+    <button class="tab-btn" onclick="switchTab('tribunales')">Tribunales</button>
+    <button class="tab-btn" onclick="switchTab('buzon')">Buzon</button>
+    <button class="tab-btn" onclick="switchTab('calendario')">Calendario</button>
     <button class="tab-btn" onclick="switchTab('notas')">Notas</button>
   </div>
 
@@ -384,6 +387,78 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: TRIBUNALES -->
+    <div class="tab-panel" id="tab-tribunales">
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <span class="dash-section-title">Registro de Jueces y Tribunales</span>
+          <span class="dash-section-tag" id="tribCount">0 registros</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;">
+          <div>
+            <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border);">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);border-right:1px solid var(--border);"><label>Nombre del juez/a</label><input type="text" id="trib_juez" placeholder="Nombre completo" style="background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;"/></div>
+                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Tribunal</label><input type="text" id="trib_tribunal" placeholder="Ej: 1er Juzgado Civil de Santiago" style="background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;"/></div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
+                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);border-right:1px solid var(--border);"><label>Materia / Area</label><select id="trib_area" style="background:var(--charcoal);border:none;color:var(--light-gray);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;-webkit-appearance:none;"><option value="">Seleccionar...</option><option>Civil</option><option>Familia</option><option>Laboral</option><option>Penal</option><option>Corporativo</option><option>Educacion</option><option>Adm. Publico</option></select></div>
+                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Experiencia</label><select id="trib_exp" style="background:var(--charcoal);border:none;color:var(--light-gray);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;-webkit-appearance:none;"><option value="positiva">Positiva</option><option value="neutra">Neutra</option><option value="compleja">Compleja</option></select></div>
+              </div>
+              <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Observaciones personales</label><textarea id="trib_obs" placeholder="Notas sobre estilo, preferencias, criterios que aplica..." style="background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:0.82rem;padding:0.4rem 0 1rem;outline:none;width:100%;resize:none;min-height:70px;line-height:1.6;"></textarea></div>
+              <div style="padding:1rem;"><button onclick="saveTribunal()" style="background:var(--white);color:var(--black);border:none;padding:10px 24px;font-family:var(--sans);font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:background 0.3s;" onmouseover="this.style.background='var(--accent)'" onmouseout="this.style.background='var(--white)'">Agregar registro</button></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid-gray);margin-bottom:1rem;">Buscar</div>
+            <input type="text" id="tribSearch" placeholder="Buscar por nombre, tribunal o area..." oninput="renderTribunales()" style="width:100%;background:var(--charcoal);border:1px solid var(--border);color:var(--white);font-family:var(--sans);font-size:0.85rem;padding:12px 14px;outline:none;margin-bottom:1rem;"/>
+            <div style="font-size:0.72rem;color:var(--mid-gray);line-height:1.7;">Registra tu experiencia con jueces y tribunales a medida que los vayas conociendo. Esta informacion es estrictamente privada y te ayuda a preparar mejor cada causa.</div>
+          </div>
+        </div>
+        <div id="tribunalesList"></div>
+      </div>
+    </div>
+
+    <!-- TAB: BUZON -->
+    <div class="tab-panel" id="tab-buzon">
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <span class="dash-section-title">Buzon de sugerencias</span>
+          <div style="display:flex;gap:1rem;align-items:center;">
+            <span class="dash-section-tag" id="buzonCount">0 mensajes</span>
+            <button class="save-btn" style="margin:0;float:none;" onclick="clearBuzon()">Limpiar todo</button>
+          </div>
+        </div>
+        <div id="buzonList"></div>
+      </div>
+    </div>
+
+    <!-- TAB: CALENDARIO -->
+    <div class="tab-panel" id="tab-calendario">
+      <div class="dash-section">
+        <div class="dash-section-header">
+          <span class="dash-section-title">Gestion de disponibilidad</span>
+          <span class="dash-section-tag">Marca dias ocupados</span>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:start;">
+          <div style="background:var(--off-black);border:1px solid var(--border);padding:1.5rem;min-width:280px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+              <button class="counter-btn" onclick="adminCalNav(-1)" style="width:30px;height:30px;">&#8592;</button>
+              <span style="font-family:var(--serif);font-size:1rem;color:var(--white);" id="adminCalMonth"></span>
+              <button class="counter-btn" onclick="adminCalNav(1)" style="width:30px;height:30px;">&#8594;</button>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;" id="adminCalGrid"></div>
+            <p style="font-size:0.65rem;color:var(--mid-gray);margin-top:1rem;line-height:1.6;">Haz clic en un dia para marcarlo como ocupado o disponible. Los dias ocupados se muestran en rojo en el sitio.</p>
+          </div>
+          <div>
+            <div style="font-family:var(--serif);font-size:1.2rem;color:var(--white);margin-bottom:1rem;">Dias marcados como ocupados</div>
+            <div id="ocupadosList" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+            <button onclick="clearOcupados()" style="margin-top:1.5rem;background:none;border:1px solid var(--border);color:var(--mid-gray);font-family:var(--sans);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;padding:8px 16px;cursor:pointer;">Limpiar todos</button>
+          </div>
         </div>
       </div>
     </div>
@@ -707,9 +782,104 @@ function initDash() {
     document.getElementById('aiStatusTag').style.color = 'var(--accent)';
   }
   renderConsultas();
+  renderTribunales();
+  renderBuzon();
+  renderAdminCal();
 }
 
 window.addEventListener('storage', e => { if(e.key==='bavm_consultas') renderConsultas(); });
+
+// ── TRIBUNALES ──
+function getTribunales(){return JSON.parse(localStorage.getItem('bavm_tribunales')||'[]');}
+function saveTribunal(){
+  const juez=document.getElementById('trib_juez').value.trim();
+  const trib=document.getElementById('trib_tribunal').value.trim();
+  if(!juez&&!trib){alert('Ingresa al menos un nombre o tribunal');return;}
+  const list=getTribunales();
+  list.push({juez,tribunal:trib,area:document.getElementById('trib_area').value,exp:document.getElementById('trib_exp').value,obs:document.getElementById('trib_obs').value,fecha:new Date().toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'})});
+  localStorage.setItem('bavm_tribunales',JSON.stringify(list));
+  document.getElementById('trib_juez').value='';document.getElementById('trib_tribunal').value='';document.getElementById('trib_obs').value='';
+  renderTribunales();
+}
+function deleteTribunal(i){const l=getTribunales();l.splice(i,1);localStorage.setItem('bavm_tribunales',JSON.stringify(l));renderTribunales();}
+function renderTribunales(){
+  const list=getTribunales();
+  const q=(document.getElementById('tribSearch')||{value:''}).value.toLowerCase();
+  const filtered=list.map((t,i)=>({...t,_i:i})).filter(t=>!q||(t.juez+t.tribunal+t.area+t.obs).toLowerCase().includes(q));
+  const cnt=document.getElementById('tribCount');
+  if(cnt)cnt.textContent=list.length+' registro'+(list.length!==1?'s':'');
+  const el=document.getElementById('tribunalesList');
+  if(!el)return;
+  if(list.length===0){el.innerHTML='<div class="empty-state">Sin registros aun. Agrega jueces y tribunales a medida que los vayas conociendo.</div>';return;}
+  const expColor={positiva:'var(--accent)',neutra:'var(--mid-gray)',compleja:'var(--burgundy)'};
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);">'+
+  filtered.map(t=>`<div style="background:var(--black);padding:1.5rem;transition:background 0.3s;position:relative;" onmouseover="this.style.background='var(--charcoal)'" onmouseout="this.style.background='var(--black)'">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.8rem;">
+      <div><div style="font-family:var(--serif);font-size:1rem;color:var(--white);margin-bottom:2px;">${t.juez||'(sin nombre)'}</div><div style="font-size:0.75rem;color:var(--mid-gray);">${t.tribunal||'(sin tribunal)'}</div></div>
+      <button onclick="deleteTribunal(${t._i})" style="background:none;border:none;color:var(--mid-gray);cursor:pointer;font-size:0.8rem;padding:0;" onmouseover="this.style.color='var(--burgundy)'" onmouseout="this.style.color='var(--mid-gray)'">&#10005;</button>
+    </div>
+    ${t.area?`<span style="font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(200,184,154,0.2);padding:2px 8px;display:inline-block;margin-bottom:0.8rem;">${t.area}</span>`:''}
+    ${t.obs?`<div style="font-size:0.78rem;color:var(--mid-gray);line-height:1.7;margin-bottom:0.8rem;font-style:italic;font-family:var(--serif);">"${t.obs}"</div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.62rem;color:${expColor[t.exp]||'var(--mid-gray)'};letter-spacing:0.1em;text-transform:uppercase;">${t.exp||'—'}</span><span style="font-size:0.6rem;color:var(--mid-gray);">${t.fecha}</span></div>
+  </div>`).join('')+'</div>';
+}
+
+// ── BUZON ──
+function renderBuzon(){
+  const list=JSON.parse(localStorage.getItem('bavm_buzones')||'[]');
+  const cnt=document.getElementById('buzonCount');
+  if(cnt)cnt.textContent=list.length+' mensaje'+(list.length!==1?'s':'');
+  const el=document.getElementById('buzonList');
+  if(!el)return;
+  if(list.length===0){el.innerHTML='<div class="empty-state">Sin mensajes en el buzon aun.</div>';return;}
+  el.innerHTML='';
+  [...list].reverse().forEach((b,i)=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--black);padding:1.5rem;border-bottom:1px solid var(--border);';
+    div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><span style="font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(200,184,154,0.2);padding:2px 8px;display:inline-block;margin-bottom:0.8rem;">${b.tipo||'Mensaje'}</span><div style="font-size:0.88rem;color:var(--white);line-height:1.7;margin-bottom:0.5rem;">"${b.mensaje}"</div><div style="font-size:0.72rem;color:var(--mid-gray);">${b.nombre} &middot; ${b.fecha}</div></div></div>`;
+    el.appendChild(div);
+  });
+}
+function clearBuzon(){if(confirm('Limpiar todos los mensajes del buzon?')){localStorage.removeItem('bavm_buzones');renderBuzon();}}
+
+// ── CALENDARIO ADMIN ──
+const MESES_A=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+let adminCalDate=new Date();
+function renderAdminCal(){
+  const occ=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');
+  const y=adminCalDate.getFullYear(),m=adminCalDate.getMonth();
+  const monthEl=document.getElementById('adminCalMonth');
+  if(monthEl)monthEl.textContent=MESES_A[m]+' '+y;
+  const grid=document.getElementById('adminCalGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  ['Do','Lu','Ma','Mi','Ju','Vi','Sa'].forEach(d=>{const el=document.createElement('div');el.style.cssText='font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--mid-gray);text-align:center;padding:4px 0;';el.textContent=d;grid.appendChild(el);});
+  const first=new Date(y,m,1).getDay();
+  for(let i=0;i<first;i++){const el=document.createElement('div');el.style.cssText='aspect-ratio:1;';grid.appendChild(el);}
+  const days=new Date(y,m+1,0).getDate();
+  const today=new Date();
+  for(let d=1;d<=days;d++){
+    const key=y+'-'+(m+1)+'-'+d;
+    const isOcc=occ.includes(key);
+    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    const el=document.createElement('div');
+    el.style.cssText=`aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.75rem;cursor:pointer;transition:all 0.2s;${isOcc?'background:rgba(139,26,46,0.25);color:var(--burgundy);':'color:var(--light-gray);'}${isToday?'outline:1px solid var(--accent);':''}`;
+    el.textContent=d;
+    el.onclick=(()=>{const k=key;return()=>{const o=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');const idx=o.indexOf(k);if(idx>-1)o.splice(idx,1);else o.push(k);localStorage.setItem('bavm_ocupados',JSON.stringify(o));renderAdminCal();};})();
+    grid.appendChild(el);
+  }
+  renderOcupados();
+}
+function adminCalNav(d){adminCalDate=new Date(adminCalDate.getFullYear(),adminCalDate.getMonth()+d,1);renderAdminCal();}
+function renderOcupados(){
+  const occ=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');
+  const el=document.getElementById('ocupadosList');
+  if(!el)return;
+  if(occ.length===0){el.innerHTML='<span style="font-size:0.78rem;color:var(--mid-gray);font-style:italic;">Sin dias ocupados marcados.</span>';return;}
+  el.innerHTML=occ.sort().map(k=>`<div style="display:inline-flex;align-items:center;gap:8px;background:rgba(139,26,46,0.15);border:1px solid rgba(139,26,46,0.3);padding:5px 12px;font-size:0.72rem;color:var(--light-gray);margin:2px;">${k}<button onclick="removeOcupado('${k}')" style="background:none;border:none;color:var(--mid-gray);cursor:pointer;padding:0;font-size:0.7rem;">&#10005;</button></div>`).join('');
+}
+function removeOcupado(k){const o=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');const i=o.indexOf(k);if(i>-1)o.splice(i,1);localStorage.setItem('bavm_ocupados',JSON.stringify(o));renderAdminCal();}
+function clearOcupados(){localStorage.removeItem('bavm_ocupados');renderAdminCal();}
 </script>
 </body>
 </html>
