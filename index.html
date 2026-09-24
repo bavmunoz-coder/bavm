@@ -10,289 +10,840 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
-      --black:#0a0a0a;--charcoal:#1c1c1c;--border:rgba(255,255,255,0.08);
-      --border-hover:rgba(255,255,255,0.18);--white:#f5f2ee;--mid-gray:#666;
-      --light-gray:#aaa;--accent:#c8b89a;--burgundy:#8B1A2E;
+      --black:#0a0a0a;--off-black:#111;--charcoal:#1c1c1c;--dark-gray:#2a2a2a;
+      --mid-gray:#666;--light-gray:#aaa;--lighter-gray:#ccc;
+      --border:rgba(255,255,255,0.08);--border-hover:rgba(255,255,255,0.2);
+      --white:#f5f2ee;--accent:#c8b89a;--burgundy:#8B1A2E;
       --serif:'Playfair Display',Georgia,serif;--sans:'Syne',sans-serif;
     }
     html{scroll-behavior:smooth;}
-    body{
-      font-family:var(--sans);background:var(--black);color:var(--white);
-      min-height:100vh;display:flex;align-items:center;justify-content:center;
-      padding:40px 20px;position:relative;overflow-x:hidden;
-    }
-    /* Fondo artístico */
-    .bg-art{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+    body{font-family:var(--sans);color:var(--white);background:var(--black);overflow-x:hidden;line-height:1.6;}
+    ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--black);}::-webkit-scrollbar-thumb{background:var(--dark-gray);}
 
-    .card{
-      position:relative;z-index:1;
-      width:100%;max-width:480px;
-      display:flex;flex-direction:column;align-items:center;
-      gap:0;
-    }
+    /* NAV */
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(10,10,10,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);transition:border-color 0.4s;}
+    nav.scrolled{border-color:var(--border-hover);}
+    .nav-logo{font-family:var(--serif);font-size:1.1rem;color:var(--white);text-decoration:none;font-weight:500;letter-spacing:0;display:inline-flex;flex-direction:column;align-items:flex-start;gap:3px;}
+    .nav-logo-text{display:inline-flex;align-items:baseline;}
+    .nav-logo .logo-gold{color:var(--accent);font-style:normal;letter-spacing:0.14em;}
+    .nav-logo .logo-burg{color:var(--burgundy);font-style:normal;letter-spacing:0;margin-left:0.01em;}
+    .nav-logo-bar{width:100%;height:2px;background:linear-gradient(to right,var(--burgundy),var(--accent));display:block;}
+    .nav-links{display:flex;align-items:center;gap:2rem;list-style:none;}
+    .nav-links a{font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--light-gray);text-decoration:none;transition:color 0.3s;}
+    .nav-links a:hover{color:var(--white);}
+    .nav-links .nav-cta{color:var(--accent);border:1px solid rgba(200,184,154,0.35);padding:7px 18px;transition:all 0.3s;}
+    .nav-links .nav-cta:hover{background:var(--accent);color:var(--black);}
+    .nav-urgencia{display:inline-flex;align-items:center;gap:7px;background:var(--burgundy);color:var(--white)!important;border:none!important;padding:7px 16px!important;font-size:0.65rem!important;letter-spacing:0.14em;animation:pulse-burg 2.5s ease-in-out infinite;}
+    @keyframes pulse-burg{0%,100%{box-shadow:0 0 0 0 rgba(139,26,46,0.4)}50%{box-shadow:0 0 0 6px rgba(139,26,46,0)}}
+    .nav-urgencia:hover{background:#a01f38!important;opacity:1!important;}
+    .hamburger{display:none;cursor:pointer;flex-direction:column;gap:5px;}
+    .hamburger span{width:22px;height:1px;background:var(--white);display:block;}
 
-    /* Avatar */
-    .avatar{
-      width:96px;height:96px;
-      display:flex;align-items:center;justify-content:center;
-      margin-bottom:1.5rem;position:relative;
-    }
-    .avatar-ring{
-      position:absolute;inset:0;border-radius:50%;
-      background:conic-gradient(from 0deg, var(--burgundy) 0%, var(--accent) 40%, var(--burgundy) 70%, var(--accent) 100%);
-      padding:1.5px;
-    }
-    .avatar-ring-inner{
-      width:100%;height:100%;border-radius:50%;
-      background:var(--black);display:flex;align-items:center;justify-content:center;
-    }
-    .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;}
+    /* URGENCIA MODAL */
+    .urgencia-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;align-items:center;justify-content:center;padding:20px;}
+    .urgencia-overlay.open{display:flex;}
+    .urgencia-box{background:var(--off-black);border:1px solid var(--burgundy);max-width:440px;width:100%;padding:2.5rem;}
+    .urgencia-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;}
+    .urgencia-title{font-family:var(--serif);font-size:1.5rem;color:var(--white);font-weight:400;line-height:1.2;}
+    .urgencia-title em{color:var(--burgundy);font-style:italic;}
+    .urgencia-close{background:none;border:none;color:var(--mid-gray);font-size:1.2rem;cursor:pointer;padding:0;line-height:1;}
+    .urgencia-close:hover{color:var(--white);}
+    .urgencia-desc{font-size:0.82rem;color:var(--mid-gray);line-height:1.8;margin-bottom:2rem;}
+    .urgencia-actions{display:flex;flex-direction:column;gap:0.8rem;}
+    .urgencia-btn{display:flex;align-items:center;gap:12px;padding:1rem 1.2rem;text-decoration:none;border:1px solid var(--border);transition:all 0.3s;}
+    .urgencia-btn:hover{border-color:var(--border-hover);background:rgba(255,255,255,0.02);}
+    .urgencia-btn.primary{background:var(--burgundy);border-color:var(--burgundy);color:var(--white);}
+    .urgencia-btn.primary:hover{background:#a01f38;border-color:#a01f38;}
+    .urgencia-btn-icon{width:36px;height:36px;min-width:36px;display:flex;align-items:center;justify-content:center;}
+    .urgencia-btn-icon svg{width:18px;height:18px;fill:currentColor;}
+    .urgencia-btn-text{flex:1;}
+    .urgencia-btn-label{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;display:block;margin-bottom:2px;color:inherit;}
+    .urgencia-btn-sub{font-size:0.75rem;color:rgba(255,255,255,0.5);}
+    .urgencia-note{font-size:0.65rem;color:var(--mid-gray);text-align:center;margin-top:1.5rem;font-style:italic;font-family:var(--serif);}
 
-    /* Nombre */
-    .profile-name{
-      font-family:var(--serif);font-size:1.6rem;font-weight:400;
-      letter-spacing:0.04em;margin-bottom:0.4rem;text-align:center;
-    }
-    .profile-name .gold{color:var(--accent);}
-    .profile-name .burg{color:var(--burgundy);}
-    .profile-title{
-      font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;
-      color:var(--mid-gray);margin-bottom:0.6rem;text-align:center;
-    }
-    .profile-bio{
-      font-size:0.82rem;color:var(--light-gray);text-align:center;
-      line-height:1.7;max-width:340px;margin-bottom:2.5rem;font-weight:300;
-    }
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:120px 5% 80px;position:relative;overflow:hidden;}
+    .hero-art{position:absolute;top:0;right:0;width:70%;height:100%;pointer-events:none;z-index:0;}
+    .hero-top,.hero-main{position:relative;z-index:1;}
+    .hero-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:auto;padding-top:20px;}
+    .hero-tag{font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);}
+    .hero-scroll-hint{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid-gray);display:flex;align-items:center;gap:10px;}
+    .hero-scroll-hint::after{content:'';width:40px;height:1px;background:var(--mid-gray);animation:sl 2s ease-in-out infinite;}
+    @keyframes sl{0%,100%{width:40px;opacity:0.4}50%{width:70px;opacity:1}}
+    .hero-main{margin-top:15vh;}
+    .hero-pretitle{font-size:0.7rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid-gray);margin-bottom:2rem;display:flex;align-items:center;gap:16px;}
+    .hero-pretitle::before{content:'';width:50px;height:1px;background:var(--mid-gray);}
+    .hero h1{font-family:var(--serif);font-size:clamp(3.5rem,9vw,8rem);font-weight:400;line-height:0.95;letter-spacing:-0.01em;color:var(--white);margin-bottom:0.15em;}
+    .hero h1 em{font-style:italic;color:var(--accent);}
+    .hero-subtitle{font-size:clamp(0.85rem,1.5vw,1rem);color:var(--mid-gray);max-width:500px;line-height:1.9;margin:2.5rem 0 3rem;font-weight:300;}
+    .hero-actions{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;}
+    .btn-main{display:inline-flex;align-items:center;gap:12px;background:var(--white);color:var(--black);padding:16px 40px;text-decoration:none;font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;transition:all 0.35s;font-family:var(--sans);}
+    .btn-main:hover{background:var(--accent);}
+    .btn-ghost{display:inline-flex;align-items:center;gap:10px;color:var(--light-gray);text-decoration:none;font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;transition:color 0.3s;border-bottom:1px solid transparent;padding-bottom:2px;}
+    .btn-ghost:hover{color:var(--white);border-color:var(--mid-gray);}
+    .hero-divider{margin-top:5rem;padding-top:2.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:2rem;}
+    .hero-stats{display:flex;gap:4rem;}
+    .stat-n{font-family:var(--serif);font-size:2.4rem;color:var(--white);font-weight:400;line-height:1;}
+    .stat-l{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid-gray);margin-top:6px;}
+    .hero-note{font-size:0.75rem;color:var(--mid-gray);max-width:260px;line-height:1.7;font-style:italic;font-family:var(--serif);}
 
-    /* Divisor */
-    .divider{
-      width:100%;height:1px;background:var(--border);
-      margin-bottom:2rem;position:relative;
-    }
-    .divider::after{
-      content:'';position:absolute;left:50%;top:-1px;transform:translateX(-50%);
-      width:40px;height:2px;
-      background:linear-gradient(to right,var(--burgundy),var(--accent));
-    }
+    /* SECCIONES */
+    .section-num{font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid-gray);margin-bottom:1rem;}
+    .section-title{font-family:var(--serif);font-size:clamp(2.2rem,5vw,4.5rem);font-weight:400;line-height:1.05;color:var(--white);}
+    .section-title em{font-style:italic;color:var(--accent);}
+    .section-sub{color:var(--mid-gray);font-size:0.9rem;line-height:1.9;max-width:480px;margin-top:1.5rem;font-weight:300;}
+    .section-header{margin-bottom:5rem;}
+    .art-divider{width:100%;height:60px;overflow:hidden;display:block;}
+    .art-divider svg{width:100%;height:100%;}
+    .reveal{opacity:0;transform:translateY(24px);transition:opacity 0.9s ease,transform 0.9s ease;}
+    .reveal.in{opacity:1;transform:translateY(0);}
 
-    /* Links */
-    .links{width:100%;display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;}
-    .link-item{
-      display:flex;align-items:center;gap:1rem;
-      padding:1rem 1.4rem;
-      border:1px solid var(--border);
-      text-decoration:none;color:var(--white);
-      transition:all 0.3s;position:relative;overflow:hidden;
-    }
-    .link-item::before{
-      content:'';position:absolute;left:0;top:0;bottom:0;
-      width:2px;background:linear-gradient(to bottom,var(--burgundy),var(--accent));
-      transform:scaleY(0);transition:transform 0.3s;transform-origin:bottom;
-    }
-    .link-item:hover{border-color:var(--border-hover);background:rgba(255,255,255,0.02);}
-    .link-item:hover::before{transform:scaleY(1);}
-    .link-icon{
-      width:36px;height:36px;min-width:36px;
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(200,184,154,0.06);
-    }
-    .link-icon svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:1.5;flex-shrink:0;}
-    .link-icon svg.filled{fill:var(--accent);stroke:none;}
-    .link-text{flex:1;}
-    .link-label{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--light-gray);display:block;margin-bottom:2px;}
-    .link-desc{font-size:0.8rem;color:var(--mid-gray);font-weight:300;}
-    .link-arrow{font-size:0.75rem;color:var(--mid-gray);transition:color 0.3s;}
-    .link-item:hover .link-arrow{color:var(--accent);}
+    /* MANIFIESTO */
+    #manifiesto{padding:120px 5%;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:center;position:relative;overflow:hidden;}
+    .manifiesto-quote{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.6rem);font-weight:400;line-height:1.3;color:var(--white);}
+    .manifiesto-quote em{font-style:italic;color:var(--accent);}
+    .manifiesto-text p{font-size:0.9rem;color:var(--mid-gray);line-height:1.9;margin-bottom:1.2rem;font-weight:300;}
+    .manifiesto-text p strong{color:var(--lighter-gray);font-weight:400;}
+    .values-list{list-style:none;margin-top:2rem;}
+    .values-list li{padding:1rem 0;border-bottom:1px solid var(--border);font-size:0.82rem;letter-spacing:0.08em;color:var(--light-gray);display:flex;align-items:center;justify-content:space-between;transition:color 0.3s;}
+    .values-list li:hover{color:var(--white);}
+    .values-list li::after{content:'→';color:var(--accent);}
 
-    /* Primer correo — destacado con acento dorado */
-    .link-email{border-color:rgba(200,184,154,0.25);}
-    .link-email .link-icon{background:rgba(200,184,154,0.08);}
-    .link-email .link-icon svg{stroke:var(--accent);}
-    .link-email:hover{border-color:rgba(200,184,154,0.5);}
-    .link-email .link-label{color:var(--accent);}
+    /* SERVICIOS */
+    #servicios{padding:120px 5%;border-top:1px solid var(--border);}
+    /* Tabs de servicios */
+    .services-tabs{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--border);}
+    .stab{font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid-gray);background:none;border:none;padding:1rem 1.8rem;cursor:pointer;font-family:var(--sans);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.3s;}
+    .stab:hover{color:var(--light-gray);}
+    .stab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .stab-panel{display:none;margin-top:0;}
+    .stab-panel.active{display:block;}
+    .services-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid rgba(255,255,255,0.1);margin-top:0;}
+    .service-card{background:var(--black);padding:2.5rem 2rem 3rem;transition:background 0.4s;border-right:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);position:relative;}
+    .service-card:nth-child(3n){border-right:none;}
+    .service-card:nth-last-child(-n+2){border-bottom:none;}
+    .service-card:nth-last-child(3){border-bottom:none;}
+    .service-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(to right,var(--burgundy),var(--accent));transition:width 0.5s ease;}
+    .service-card:hover{background:var(--charcoal);}
+    .service-card:hover::before{width:100%;}
+    .service-num{font-size:0.6rem;letter-spacing:0.3em;color:var(--dark-gray);margin-bottom:2rem;}
+    .service-card h3{font-family:var(--serif);font-size:1.4rem;font-weight:400;color:var(--white);margin-bottom:1rem;line-height:1.2;}
+    .service-card p{font-size:0.82rem;color:var(--mid-gray);line-height:1.8;font-weight:300;}
+    .service-tag{display:inline-block;margin-top:1.5rem;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(200,184,154,0.2);padding:4px 12px;}
+    /* Panel servicios generales */
+    .servicios-generales{border:1px solid rgba(255,255,255,0.1);margin-top:0;}
+    .servicio-row{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 1.8rem;border-bottom:1px solid var(--border);transition:background 0.3s;cursor:default;}
+    .servicio-row:last-child{border-bottom:none;}
+    .servicio-row:hover{background:var(--charcoal);}
+    .servicio-row-name{font-size:0.9rem;color:var(--white);font-family:var(--serif);font-weight:400;}
+    .servicio-row-tag{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(200,184,154,0.15);padding:3px 10px;}
+    /* Panel consulta libre */
+    .consulta-libre-panel{border:1px solid rgba(255,255,255,0.1);padding:3rem;}
+    .consulta-libre-panel h3{font-family:var(--serif);font-size:1.8rem;font-weight:400;color:var(--white);margin-bottom:1rem;}
+    .consulta-libre-panel h3 em{font-style:italic;color:var(--accent);}
+    .consulta-libre-panel p{font-size:0.88rem;color:var(--mid-gray);line-height:1.9;margin-bottom:2rem;max-width:580px;}
 
-    /* Especialidades tags */
-    .tags{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2rem;}
-    .tag{
-      font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
-      color:var(--light-gray);
-      border:1px solid transparent;
-      background:linear-gradient(var(--black),var(--black)) padding-box,
-                 linear-gradient(to right,#C0272D,var(--accent)) border-box;
-      padding:4px 10px;
-      position:relative;overflow:hidden;
-      transition:color 0.35s;
-    }
-    .tag::before{
-      content:'';
-      position:absolute;inset:0;
-      background:linear-gradient(to right,rgba(139,26,46,0.18),rgba(200,184,154,0.12));
-      transform:scaleX(0);transform-origin:left;
-      transition:transform 0.35s ease;
-      z-index:0;
-    }
-    .tag:hover::before{transform:scaleX(1);}
-    .tag:hover{color:var(--accent);}
-    .tag span,.tag{z-index:1;position:relative;}
-    .tag-accent{
-      color:var(--light-gray);
-      background:linear-gradient(var(--black),var(--black)) padding-box,
-                 linear-gradient(to right,#C0272D,var(--accent)) border-box;
-      position:relative;overflow:hidden;
-      transition:color 0.35s;
-    }
-    .tag-accent::before{
-      content:'';
-      position:absolute;inset:0;
-      background:linear-gradient(to right,rgba(139,26,46,0.18),rgba(200,184,154,0.12));
-      transform:scaleX(0);transform-origin:left;
-      transition:transform 0.35s ease;
-      z-index:0;
-    }
-    .tag-accent:hover::before{transform:scaleX(1);}
-    .tag-accent:hover{color:var(--accent);}
+    /* CALENDARIO */
+    #calendario{padding:80px 5%;border-top:1px solid var(--border);}
+    .cal-layout{display:grid;grid-template-columns:auto 1fr;gap:4rem;margin-top:3rem;align-items:start;}
+    .cal-wrap{background:var(--off-black);border:1px solid var(--border);padding:1.5rem;min-width:280px;}
+    .cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;}
+    .cal-month{font-family:var(--serif);font-size:1.1rem;color:var(--white);font-weight:400;}
+    .cal-nav{background:none;border:1px solid var(--border);color:var(--mid-gray);width:30px;height:30px;cursor:pointer;transition:all 0.2s;font-size:0.8rem;}
+    .cal-nav:hover{border-color:var(--border-hover);color:var(--white);}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+    .cal-dow{font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid-gray);text-align:center;padding:4px 0;}
+    .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--light-gray);cursor:default;transition:all 0.2s;position:relative;}
+    .cal-day.empty{color:transparent;}
+    .cal-day.today{color:var(--accent);font-weight:500;}
+    .cal-day.occupied{background:rgba(139,26,46,0.2);color:var(--mid-gray);cursor:not-allowed;}
+    .cal-day.occupied::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:3px;height:3px;background:var(--burgundy);border-radius:50%;}
+    .cal-day.available{color:var(--white);}
+    .cal-day.available:hover{background:rgba(200,184,154,0.1);color:var(--accent);}
+    .cal-legend{display:flex;gap:1.5rem;margin-top:1rem;flex-wrap:wrap;}
+    .cal-legend-item{display:flex;align-items:center;gap:6px;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid-gray);}
+    .cal-dot{width:8px;height:8px;border-radius:50%;}
+    .cal-info{padding-top:0.5rem;}
+    .cal-info h3{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--white);margin-bottom:1rem;}
+    .cal-info h3 em{font-style:italic;color:var(--accent);}
+    .cal-info p{font-size:0.88rem;color:var(--mid-gray);line-height:1.9;margin-bottom:1.5rem;}
+    .cal-horarios{list-style:none;margin-bottom:2rem;}
+    .cal-horarios li{padding:0.8rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;font-size:0.82rem;color:var(--light-gray);}
+    .cal-horarios li span:last-child{color:var(--mid-gray);}
 
-    /* Footer */
-    .profile-footer{
-      font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
-      color:rgba(255,255,255,0.15);text-align:center;margin-top:1rem;
+    /* SOBRE MI */
+    #sobre-mi{padding:120px 5%;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:8rem;align-items:start;position:relative;}
+    .about-image-col{position:sticky;top:100px;}
+    .about-img-frame{width:100%;aspect-ratio:3/4;background:var(--charcoal);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+    .about-img-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;}
+    .about-scale-ring{width:160px;height:160px;border-radius:50%;background:conic-gradient(from 0deg,#8B1A2E 0%,#c8b89a 40%,#8B1A2E 70%,#c8b89a 100%);padding:2px;flex-shrink:0;}
+    .about-scale-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--charcoal);display:flex;align-items:center;justify-content:center;}
+    .about-img-caption{margin-top:1.5rem;display:flex;justify-content:space-between;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid-gray);}
+    .about-body{margin-top:2.5rem;}
+    .about-body p{font-size:0.9rem;color:var(--mid-gray);line-height:1.9;margin-bottom:1.4rem;font-weight:300;}
+    .about-body p strong{color:var(--lighter-gray);font-weight:400;}
+    .edu-list{list-style:none;margin-top:2.5rem;}
+    .edu-item{padding:1.2rem 0;border-top:1px solid var(--border);display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;}
+    .edu-year{font-size:0.65rem;color:var(--mid-gray);letter-spacing:0.12em;padding-top:3px;min-width:40px;}
+    .edu-title{font-size:0.88rem;color:var(--white);margin-bottom:3px;}
+    .edu-place{font-size:0.78rem;color:var(--mid-gray);font-weight:300;}
+
+    /* CONTACTO */
+    #contacto{padding:120px 5% 100px;border-top:1px solid var(--border);background:var(--off-black);}
+    .contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:8rem;margin-top:5rem;align-items:start;}
+    .contact-manifesto{font-family:var(--serif);font-size:clamp(1.4rem,2.5vw,2.2rem);font-weight:400;color:var(--white);line-height:1.4;margin-bottom:3rem;}
+    .contact-manifesto em{font-style:italic;color:var(--accent);}
+    .contact-row{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border);transition:border-color 0.3s;}
+    .contact-row:hover{border-color:var(--border-hover);}
+    .contact-row-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid-gray);}
+    .contact-row-value{font-size:0.88rem;color:var(--light-gray);text-decoration:none;transition:color 0.3s;}
+    .contact-row-value:hover{color:var(--accent);}
+    /* wa-btn removed — WhatsApp solo en urgencias */
+    .contact-form{display:flex;flex-direction:column;gap:0;}
+    .form-field{border-bottom:1px solid var(--border);transition:border-color 0.3s;}
+    .form-field:focus-within{border-color:var(--border-hover);}
+    .form-field label{display:block;font-size:0.6rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--mid-gray);padding:1.2rem 0 0.4rem;}
+    .form-field input,.form-field select,.form-field textarea{width:100%;background:transparent;border:none;outline:none;color:var(--white);font-family:var(--sans);font-size:0.9rem;padding:0.4rem 0 1.2rem;font-weight:300;-webkit-appearance:none;}
+    .form-field input::placeholder,.form-field textarea::placeholder{color:var(--dark-gray);}
+    .form-field select{color:var(--light-gray);cursor:pointer;}
+    .form-field select option{background:#111;color:var(--white);}
+    .form-field textarea{resize:none;min-height:100px;}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0 2rem;}
+    .form-submit{margin-top:2.5rem;background:var(--white);color:var(--black);border:none;padding:18px;font-family:var(--sans);font-size:0.78rem;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;cursor:pointer;transition:background 0.3s;width:100%;}
+    .form-submit:hover{background:var(--accent);}
+    .form-success{display:none;margin-top:1.5rem;text-align:center;font-family:var(--serif);font-style:italic;color:var(--accent);font-size:1.1rem;}
+    .form-blocked{display:none;margin-top:1.5rem;text-align:center;font-family:var(--serif);font-style:italic;color:var(--burgundy);font-size:0.95rem;line-height:1.7;}
+
+    /* TRABAJOS */
+    #trabajos{padding:80px 5%;border-top:1px solid var(--border);}
+    .trabajos-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3rem;border:1px solid rgba(255,255,255,0.07);}
+    .trabajo-card{padding:2rem 1.8rem;border-right:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);position:relative;transition:background 0.3s;}
+    .trabajo-card:hover{background:var(--charcoal);}
+    .trabajo-card::before{content:'';position:absolute;top:0;left:0;width:0;height:1px;background:linear-gradient(to right,var(--burgundy),var(--accent));transition:width 0.5s;}
+    .trabajo-card:hover::before{width:100%;}
+    .trabajo-card:nth-child(2n){border-right:none;}
+    .trabajo-card:nth-last-child(-n+2){border-bottom:none;}
+    .trabajo-tag{font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--burgundy);margin-bottom:0.8rem;display:block;}
+    .trabajo-title{font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--white);margin-bottom:0.6rem;line-height:1.3;}
+    .trabajo-desc{font-size:0.8rem;color:var(--mid-gray);line-height:1.8;font-weight:300;}
+    .trabajo-note{font-size:0.72rem;color:rgba(255,255,255,0.2);font-style:italic;font-family:var(--serif);margin-top:1rem;display:block;}
+
+    /* BUZON */
+    #buzon{padding:80px 5%;border-top:1px solid var(--border);}
+    .buzon-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:6rem;margin-top:3rem;align-items:start;}
+    .buzon-intro h3{font-family:var(--serif);font-size:1.8rem;font-weight:400;color:var(--white);margin-bottom:1rem;}
+    .buzon-intro h3 em{font-style:italic;color:var(--accent);}
+    .buzon-intro p{font-size:0.88rem;color:var(--mid-gray);line-height:1.9;}
+    .buzon-form{display:flex;flex-direction:column;gap:0;}
+
+    /* FOOTER */
+    footer{padding:2rem 5%;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+    footer p{font-size:0.7rem;letter-spacing:0.12em;color:var(--mid-gray);text-transform:uppercase;}
+    .footer-links{display:flex;gap:2rem;flex-wrap:wrap;}
+    .footer-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid-gray);text-decoration:none;transition:color 0.3s;}
+    .footer-links a:hover{color:var(--accent);}
+
+    /* SEPARADOR FINO URGENCIAS */
+    .urgencia-divider{height:1px;background:var(--border);margin:1rem 0;}
+
+    /* CAL BTNS */
+    .cal-btn-row{display:flex;flex-direction:column;gap:0.75rem;}
+
+    /* CONTACT CALENDLY */
+    .contact-cta-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      #manifiesto,#sobre-mi,.contact-grid,.buzon-grid,.cal-layout{grid-template-columns:1fr;gap:4rem;}
+      .trabajos-grid{grid-template-columns:1fr;}
+      .about-image-col{position:static;}
+      .hero-stats{gap:2.5rem;}
+      .hero-divider{flex-direction:column;}
+      .form-row{grid-template-columns:1fr;}
+      .services-grid{grid-template-columns:1fr 1fr;}
+      .nav-links{display:none;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:rgba(10,10,10,0.98);padding:2rem 5%;gap:1.5rem;border-bottom:1px solid var(--border);}
+      .nav-links.open{display:flex;}
+      .hamburger{display:flex;}
+      .cal-wrap{min-width:unset;}
+      #manifiesto,#servicios,#calendario,#sobre-mi,#contacto,#buzon{padding:80px 5%;}
     }
-    .profile-footer span{color:var(--burgundy);}
+    @media(max-width:560px){
+      .services-grid{grid-template-columns:1fr;}
+      .hero{padding:100px 5% 60px;}
+      .hero-main{margin-top:10vh;}
+      .hero-art{width:100%;opacity:0.35;}
+      .hero-actions{flex-direction:column;align-items:flex-start;gap:1rem;}
+      .btn-main{width:100%;justify-content:center;padding:16px 24px;}
+      .btn-ghost{padding-bottom:4px;}
+      .hero-stats{flex-wrap:wrap;gap:1.5rem;}
+      .hero-divider{gap:1.5rem;}
+      .section-header{margin-bottom:3rem;}
+      .services-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+      .stab{white-space:nowrap;padding:1rem 1.2rem;}
+      .service-card{padding:2rem 1.5rem 2.5rem;}
+      .contact-grid{gap:3rem;}
+      .urgencia-box{padding:2rem 1.5rem;}
+      .urgencia-actions{gap:0.6rem;}
+      .urgencia-btn{padding:0.9rem 1rem;}
+      .cal-layout{gap:2.5rem;}
+      .about-img-frame{aspect-ratio:4/3;}
+      footer{flex-direction:column;align-items:flex-start;gap:1.5rem;}
+      .footer-links{gap:1.2rem;}
+      .contact-row{flex-direction:column;align-items:flex-start;gap:0.3rem;padding:1rem 0;}
+    }
+    @media(max-width:380px){
+      .hero h1{font-size:3rem;}
+      .section-title{font-size:2rem;}
+      nav{padding:0 4%;}
+    }
   </style>
 </head>
 <body>
 
-<!-- Fondo artístico — mismas líneas que el sitio principal -->
-<svg class="bg-art" viewBox="0 0 800 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-  <line x1="0" y1="800" x2="500" y2="100" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
-  <line x1="800" y1="700" x2="300" y2="50" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
-  <line x1="200" y1="0" x2="600" y2="900" stroke="rgba(200,184,154,0.02)" stroke-width="0.5"/>
-  <circle cx="400" cy="450" r="260" stroke="rgba(200,184,154,0.02)" stroke-width="0.5" fill="none" stroke-dasharray="2 18"/>
-  <circle cx="400" cy="450" r="160" stroke="rgba(139,26,46,0.03)" stroke-width="0.5" fill="none"/>
-  <!-- Figura EQ mínima -->
-  <g stroke="rgba(200,184,154,0.05)" stroke-width="0.6" fill="none">
-    <ellipse cx="680" cy="120" rx="18" ry="22"/>
-    <line x1="680" y1="142" x2="680" y2="165"/>
-    <path d="M658 165 Q680 158 702 165 L706 230 Q680 242 654 230 Z"/>
-    <path d="M658 182 Q636 210 630 250"/>
-    <path d="M702 182 Q724 212 728 252"/>
-  </g>
-</svg>
-
-<div class="card">
-
-  <!-- Avatar -->
-  <div class="avatar">
-    <div class="avatar-ring">
-      <div class="avatar-ring-inner">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="scaleGold" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#8B1A2E"/>
-              <stop offset="55%" stop-color="#c8b89a"/>
-              <stop offset="100%" stop-color="#8B1A2E"/>
-            </linearGradient>
-          </defs>
-          <!-- Base / pedestal -->
-          <line x1="24" y1="8" x2="24" y2="38" stroke="url(#scaleGold)" stroke-width="1.2" stroke-linecap="round"/>
-          <line x1="17" y1="38" x2="31" y2="38" stroke="url(#scaleGold)" stroke-width="1.2" stroke-linecap="round"/>
-          <!-- Travesaño superior -->
-          <line x1="10" y1="14" x2="38" y2="14" stroke="url(#scaleGold)" stroke-width="1" stroke-linecap="round"/>
-          <!-- Cadenas izquierda -->
-          <line x1="10" y1="14" x2="8" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
-          <line x1="10" y1="14" x2="12" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
-          <!-- Platillo izquierdo -->
-          <path d="M5 24 Q10 28 15 24" stroke="#c8b89a" stroke-width="1" fill="none" stroke-linecap="round"/>
-          <line x1="5" y1="24" x2="15" y2="24" stroke="#c8b89a" stroke-width="0.6" stroke-linecap="round"/>
-          <!-- Cadenas derecha -->
-          <line x1="38" y1="14" x2="36" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
-          <line x1="38" y1="14" x2="40" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
-          <!-- Platillo derecho (levemente más alto = en equilibrio dinámico) -->
-          <path d="M33 22 Q38 26 43 22" stroke="#8B1A2E" stroke-width="1" fill="none" stroke-linecap="round"/>
-          <line x1="33" y1="22" x2="43" y2="22" stroke="#8B1A2E" stroke-width="0.6" stroke-linecap="round"/>
-          <!-- Punto central -->
-          <circle cx="24" cy="14" r="1.5" fill="#c8b89a"/>
-          <circle cx="24" cy="8" r="1.2" fill="#8B1A2E"/>
-        </svg>
-      </div>
+<!-- URGENCIA MODAL -->
+<div class="urgencia-overlay" id="urgenciaOverlay" onclick="if(event.target===this)closeUrgencia()">
+  <div class="urgencia-box">
+    <div class="urgencia-header">
+      <h2 class="urgencia-title">Urgencia <em>legal</em><br/>24/7</h2>
+      <button class="urgencia-close" onclick="closeUrgencia()">&#10005;</button>
     </div>
-    <!-- Reemplaza con: <img src="foto.jpg" alt="BAVM"> -->
-  </div>
-
-  <!-- Nombre y título -->
-  <h1 class="profile-name"><span class="gold">BAV</span><span class="burg">M</span></h1>
-  <p class="profile-title">Abogado &mdash; Santiago, Chile</p>
-  <p class="profile-bio">Asesoría legal en derecho civil, laboral, familia y corporativo. Magíster (c) en Derecho, Universidad de Valparaíso.</p>
-
-  <div class="divider"></div>
-
-  <!-- Especialidades -->
-  <div class="tags" style="flex-direction:column;align-items:center;gap:0.6rem;">
-    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;">
-      <span class="tag">Civil</span>
-      <span class="tag">Familia</span>
-      <span class="tag">Laboral</span>
-      <span class="tag">Sucesorio</span>
-      <span class="tag">Corporativo</span>
+    <p class="urgencia-desc">Detencion, notificacion urgente, medida cautelar. Si no puede esperar, contactame ahora.</p>
+    <div class="urgencia-actions">
+      <a href="https://wa.me/56973937184?text=URGENCIA%20LEGAL%3A%20Necesito%20asistencia%20inmediata." class="urgencia-btn primary" target="_blank">
+        <div class="urgencia-btn-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+        <div class="urgencia-btn-text"><span class="urgencia-btn-label">WhatsApp ahora</span><span class="urgencia-btn-sub">Respuesta inmediata</span></div>
+      </a>
+      <a href="tel:+56973937184" class="urgencia-btn">
+        <div class="urgencia-btn-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.18 6.18l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+        <div class="urgencia-btn-text"><span class="urgencia-btn-label" style="color:var(--light-gray);">Llamada directa</span><span class="urgencia-btn-sub">+56 9 7393 7184</span></div>
+      </a>
     </div>
-    <div style="display:flex;gap:0.5rem;justify-content:center;">
-      <span class="tag tag-accent">Asesoría</span>
-      <span class="tag tag-accent">Online</span>
-    </div>
+    <p class="urgencia-note">"En derecho, los plazos no esperan. Tampoco yo."<br/><span style="display:block;margin-top:0.5rem;font-style:normal;font-size:0.7rem;letter-spacing:0.1em;">bavmunozlegal@gmail.com</span></p>
   </div>
-
-  <!-- Links -->
-  <div class="links">
-
-    <a href="mailto:bavmunozlegal@gmail.com?subject=Primera%20consulta&body=Hola%2C%20quisiera%20agendar%20una%20primera%20consulta." class="link-item link-email" target="_blank">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div class="link-text">
-        <span class="link-label">Primera consulta</span>
-        <span class="link-desc">bavmunozlegal@gmail.com — sin costo</span>
-      </div>
-      <span class="link-arrow">↗</span>
-    </a>
-
-    <a href="mailto:bavmunoz@gmail.com" class="link-item" target="_blank">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-      </div>
-      <div class="link-text">
-        <span class="link-label">Correo alternativo</span>
-        <span class="link-desc">bavmunoz@gmail.com</span>
-      </div>
-      <span class="link-arrow">↗</span>
-    </a>
-
-    <a href="https://bavmunoz-coder.github.io/bavm/" class="link-item" target="_blank">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      </div>
-      <div class="link-text">
-        <span class="link-label">Sitio web</span>
-        <span class="link-desc">Servicios, agenda y formulario de contacto</span>
-      </div>
-      <span class="link-arrow">↗</span>
-    </a>
-
-    <a href="https://www.linkedin.com/in/bastian-andre-vasquez-mu%C3%B1oz-20a241268/" class="link-item" target="_blank">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-      </div>
-      <div class="link-text">
-        <span class="link-label">LinkedIn</span>
-        <span class="link-desc">Perfil profesional y trayectoria</span>
-      </div>
-      <span class="link-arrow">↗</span>
-    </a>
-
-  </div>
-
-  <p class="profile-footer">BAVM &nbsp;<span>·</span>&nbsp; Abogado &nbsp;<span>·</span>&nbsp; Santiago, Chile</p>
-
 </div>
 
+<!-- NAV -->
+<nav id="nav">
+  <a href="#inicio" class="nav-logo">
+    <span class="nav-logo-text"><em class="logo-gold">BAV</em><em class="logo-burg">M</em></span>
+    <span class="nav-logo-bar"></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#manifiesto">Filosofia</a></li>
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#calendario">Agenda</a></li>
+    <li><a href="#sobre-mi">Perfil</a></li>
+    <li><a href="#trabajos">Trabajos</a></li>
+    <li><a href="#contacto" class="nav-cta">Consultar</a></li>
+    <li><a href="#" class="nav-urgencia" onclick="event.preventDefault();openUrgencia()">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+      Urgencia 24/7
+    </a></li>
+  </ul>
+  <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <svg class="hero-art" viewBox="0 0 900 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <line x1="0" y1="580" x2="420" y2="120" stroke="rgba(200,184,154,0.04)" stroke-width="0.5"/>
+    <line x1="0" y1="620" x2="500" y2="80" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
+    <line x1="900" y1="520" x2="460" y2="140" stroke="rgba(200,184,154,0.04)" stroke-width="0.5"/>
+    <line x1="900" y1="480" x2="380" y2="160" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <line x1="180" y1="0" x2="640" y2="700" stroke="rgba(200,184,154,0.03)" stroke-width="0.5"/>
+    <line x1="240" y1="0" x2="780" y2="700" stroke="rgba(200,184,154,0.02)" stroke-width="0.5"/>
+    <g stroke="rgba(200,184,154,0.07)" stroke-width="0.6" fill="none">
+      <ellipse cx="720" cy="155" rx="28" ry="34"/>
+      <line x1="720" y1="189" x2="720" y2="218"/>
+      <path d="M680 218 Q720 210 760 218 L768 340 Q720 360 672 340 Z"/>
+      <line x1="720" y1="218" x2="720" y2="340" stroke-dasharray="4 6"/>
+      <path d="M680 240 Q640 290 628 360 Q624 380 632 390"/>
+      <path d="M760 240 Q800 300 810 370 Q814 388 806 396"/>
+      <path d="M695 340 Q688 420 682 500 Q680 540 686 570"/>
+      <path d="M745 340 Q752 420 758 500 Q760 540 754 570"/>
+      <path d="M695 250 Q680 268 688 278" stroke-width="0.4"/>
+      <path d="M695 268 Q678 286 686 296" stroke-width="0.4"/>
+      <path d="M745 250 Q760 268 752 278" stroke-width="0.4"/>
+      <path d="M745 268 Q762 286 754 296" stroke-width="0.4"/>
+    </g>
+    <circle cx="720" cy="155" r="70" stroke="rgba(139,26,46,0.05)" stroke-width="0.5" fill="none"/>
+    <circle cx="720" cy="155" r="110" stroke="rgba(200,184,154,0.03)" stroke-width="0.5" fill="none" stroke-dasharray="3 12"/>
+    <line x1="0" y1="480" x2="900" y2="380" stroke="rgba(200,184,154,0.035)" stroke-width="0.5"/>
+  </svg>
+  <div class="hero-top">
+    <span class="hero-tag">Abogado &mdash; Santiago, Chile</span>
+    <span class="hero-scroll-hint">Scroll</span>
+  </div>
+  <div class="hero-main">
+    <p class="hero-pretitle">Abogado &middot; Santiago, Chile</p>
+    <div style="width:60px;height:2px;background:linear-gradient(to right,var(--burgundy),var(--accent));margin:1.8rem 0 2rem;"></div>
+    <h1>Tu problema<br/>legal tiene<br/><em>solucion.</em></h1>
+    <p class="hero-subtitle">Asesoria en derecho civil, familia, sucesorio, laboral y corporativo. Rigor tecnico, reserva total.</p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-main">Primera consulta gratuita &rarr;</a>
+      <a href="https://calendly.com/bavmunozlegal" class="btn-ghost" target="_blank">Agendar hora &rarr;</a>
+    </div>
+    <div class="hero-divider">
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">Civil</div><div class="stat-l">Familia &middot; Sucesorio</div></div>
+        <div class="stat"><div class="stat-n">Laboral</div><div class="stat-l">Tutela &middot; Corporativo</div></div>
+        <div class="stat"><div class="stat-n">Online</div><div class="stat-l">Todo Chile</div></div>
+      </div>
+      <p class="hero-note">"Primera consulta sin costo."</p>
+    </div>
+  </div>
+</section>
+
+<!-- DIVISOR -->
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 30 Q150 8 300 30 Q450 52 600 30 Q750 8 900 30 Q1050 52 1200 30" stroke="rgba(200,184,154,0.08)" stroke-width="0.8" fill="none"/><path d="M0 38 Q200 18 400 38 Q600 58 800 38 Q1000 18 1200 38" stroke="rgba(139,26,46,0.06)" stroke-width="0.5" fill="none"/></svg></div>
+
+<!-- MANIFIESTO -->
+<section id="manifiesto" style="position:relative;overflow:hidden;">
+  <svg style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;" aria-hidden="true" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 500">
+    <line x1="0" y1="0" x2="1200" y2="500" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <line x1="1200" y1="0" x2="0" y2="500" stroke="rgba(200,184,154,0.025)" stroke-width="0.5"/>
+    <circle cx="600" cy="250" r="180" stroke="rgba(139,26,46,0.04)" stroke-width="0.5" fill="none"/>
+    <circle cx="600" cy="250" r="300" stroke="rgba(200,184,154,0.02)" stroke-width="0.5" fill="none" stroke-dasharray="1 15"/>
+  </svg>
+  <div style="position:relative;z-index:1;" class="reveal">
+    <p class="section-num">01 &mdash; Filosofia</p>
+    <blockquote class="manifiesto-quote">El derecho es para <em>proteger.</em></blockquote>
+  </div>
+  <div class="manifiesto-text reveal" style="position:relative;z-index:1;">
+    <p>Escucho antes de opinar. Preparo antes de actuar. Y soy honesto sobre las posibilidades reales desde el primer dia.</p>
+    <ul class="values-list">
+      <li>Confidencialidad absoluta</li>
+      <li>Apertura frente a cualquier tipo de caso</li>
+      <li>Comunicacion directa y sin tecnicismos</li>
+      <li>Honorarios transparentes</li>
+    </ul>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 45 Q300 5 600 35 Q900 65 1200 20" stroke="rgba(200,184,154,0.07)" stroke-width="0.8" fill="none"/></svg></div>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-header reveal">
+    <p class="section-num">02 &mdash; Servicios</p>
+    <h2 class="section-title">Areas de<br/><em>practica</em></h2>
+    <p class="section-sub">Cada caso tiene una via legal — encontremosla juntos.</p>
+  </div>
+  <div class="services-tabs">
+    <button class="stab active" onclick="switchStab('materias',this)">Materias de derecho</button>
+    <button class="stab" onclick="switchStab('gestiones',this)">Gestiones y tramites</button>
+    <button class="stab" onclick="switchStab('consulta',this)">Consulta abierta</button>
+  </div>
+
+  <!-- Tab 1: Materias -->
+  <div class="stab-panel active" id="stab-materias">
+    <div class="services-grid">
+      <div class="service-card reveal"><div class="service-num">01</div><h3>Derecho Civil</h3><p>Contratos, arrendamientos, responsabilidad contractual y extracontractual, cobro de deudas.</p><span class="service-tag">Civil</span></div>
+      <div class="service-card reveal"><div class="service-num">02</div><h3>Prescripcion de Deuda</h3><p>Extincion de obligaciones por el transcurso del tiempo. Analisis de viabilidad y defensa frente a cobranzas prejudiciales y judiciales.</p><span class="service-tag">Civil</span></div>
+      <div class="service-card reveal"><div class="service-num">03</div><h3>Derecho de Familia</h3><p>Divorcios, tuicion, alimentos, regimen de visitas y union civil.</p><span class="service-tag">Familia</span></div>
+      <div class="service-card reveal"><div class="service-num">04</div><h3>Derecho Sucesorio</h3><p>Herencias, posesion efectiva, testamentos y particion de bienes.</p><span class="service-tag">Sucesorio</span></div>
+      <div class="service-card reveal"><div class="service-num">05</div><h3>Tutela Laboral &amp; Despido</h3><p>Despido injustificado, tutela de derechos fundamentales, acoso laboral y acciones ante la Inspeccion del Trabajo.</p><span class="service-tag">Laboral</span></div>
+      <div class="service-card reveal"><div class="service-num">06</div><h3>Derecho de Educacion</h3><p>Sumarios academicos, recursos contra instituciones y Superintendencia de Educacion.</p><span class="service-tag">Educacion</span></div>
+      <div class="service-card reveal"><div class="service-num">07</div><h3>Sumarios Administrativos</h3><p>Defensa en procedimientos disciplinarios del sector publico. Funcionarios de planta, contrata y honorarios.</p><span class="service-tag">Adm. Publico</span></div>
+      <div class="service-card reveal"><div class="service-num">08</div><h3>Derecho Corporativo</h3><p>Constitucion de empresas, contratos comerciales y asesoria a pymes.</p><span class="service-tag">Corporativo</span></div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Gestiones -->
+  <div class="stab-panel" id="stab-gestiones">
+    <div class="servicios-generales">
+      <div class="servicio-row reveal"><span class="servicio-row-name">Posesion efectiva</span><span class="servicio-row-tag">Sucesorio</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Compraventa de bienes inmuebles</span><span class="servicio-row-tag">Civil</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Compraventa de bienes muebles</span><span class="servicio-row-tag">Civil</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Inscripciones CBR (Conservador de Bienes Raices)</span><span class="servicio-row-tag">Inmobiliario</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Redaccion y revision de contratos</span><span class="servicio-row-tag">Civil</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Escrituras y protocolizaciones</span><span class="servicio-row-tag">Notarial</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Recursos administrativos</span><span class="servicio-row-tag">Adm. Publico</span></div>
+      <div class="servicio-row reveal"><span class="servicio-row-name">Tramites judiciales y extrajudiciales</span><span class="servicio-row-tag">General</span></div>
+    </div>
+  </div>
+
+  <!-- Tab 3: Consulta abierta -->
+  <div class="stab-panel" id="stab-consulta">
+    <div class="consulta-libre-panel reveal">
+      <h3>No sabes como <em>clasificarlo.</em></h3>
+      <p>No todos los problemas vienen con etiqueta juridica. Si no sabes donde encuadrar tu situacion, cuéntamela. Identificamos juntos que area aplica y cuales son los pasos a seguir.</p>
+      <p>Sin tecnicismos. Primera consulta sin costo.</p>
+      <a href="#contacto" class="btn-main" style="display:inline-flex;">Cuéntame tu caso &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 20 L400 40 L800 15 L1200 38" stroke="rgba(200,184,154,0.06)" stroke-width="0.6" fill="none"/></svg></div>
+
+<!-- CALENDARIO -->
+<section id="calendario">
+  <div class="section-header reveal">
+    <p class="section-num">03 &mdash; Agenda</p>
+    <h2 class="section-title">Disponibilidad<br/><em>y citas</em></h2>
+  </div>
+  <div class="cal-layout">
+    <div class="reveal">
+      <div class="cal-wrap">
+        <div class="cal-header">
+          <button class="cal-nav" onclick="calNav(-1)">&#8592;</button>
+          <span class="cal-month" id="calMonth"></span>
+          <button class="cal-nav" onclick="calNav(1)">&#8594;</button>
+        </div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-legend">
+          <div class="cal-legend-item"><div class="cal-dot" style="background:var(--accent)"></div>Hoy</div>
+          <div class="cal-legend-item"><div class="cal-dot" style="background:var(--burgundy)"></div>Ocupado</div>
+          <div class="cal-legend-item"><div class="cal-dot" style="background:var(--charcoal);border:1px solid var(--border)"></div>Disponible</div>
+        </div>
+      </div>
+    </div>
+    <div class="cal-info reveal">
+      <h3>Agenda tu <em>consulta</em></h3>
+      <p>Presencial en Santiago Centro u online para todo Chile.</p>
+      <ul class="cal-horarios">
+        <li><span>Lunes a jueves</span><span>9:00 &mdash; 19:00</span></li>
+        <li><span>Viernes</span><span>9:00 &mdash; 13:00</span></li>
+        <li><span>Urgencias</span><span>24/7</span></li>
+      </ul>
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <a href="https://calendly.com/bavmunozlegal" class="btn-main" target="_blank" style="display:inline-flex;align-items:center;gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Agendar hora &rarr;
+        </a>
+        <a href="mailto:bavmunozlegal@gmail.com?subject=Solicitud%20de%20hora&body=Hola,%20quisiera%20agendar%20una%20consulta." class="btn-ghost" style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          Agendar por correo &rarr;
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 35 Q300 10 600 40 Q900 65 1200 25" stroke="rgba(200,184,154,0.06)" stroke-width="0.7" fill="none"/><circle cx="600" cy="40" r="3" fill="rgba(139,26,46,0.15)"/></svg></div>
+
+<!-- SOBRE MI -->
+<section id="sobre-mi" style="position:relative;">
+  <svg style="position:absolute;bottom:60px;right:5%;width:160px;height:200px;pointer-events:none;opacity:0.06;" aria-hidden="true" viewBox="0 0 160 200">
+    <path d="M80 10 Q90 30 80 50 Q70 70 80 90 Q90 110 80 130 Q70 150 80 170 Q90 190 80 200" stroke="#c8b89a" stroke-width="0.8" fill="none"/>
+    <path d="M60 40 Q80 50 100 40" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+    <path d="M55 80 Q80 95 105 80" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+    <ellipse cx="80" cy="10" rx="12" ry="14" stroke="#c8b89a" stroke-width="0.6" fill="none"/>
+  </svg>
+  <div class="about-image-col reveal">
+    <div class="about-img-frame">
+      <div class="about-img-placeholder">
+        <div class="about-scale-ring">
+          <div class="about-scale-ring-inner">
+            <svg width="90" height="90" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="scaleGold2" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#8B1A2E"/>
+                  <stop offset="55%" stop-color="#c8b89a"/>
+                  <stop offset="100%" stop-color="#8B1A2E"/>
+                </linearGradient>
+              </defs>
+              <line x1="24" y1="8" x2="24" y2="38" stroke="url(#scaleGold2)" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="17" y1="38" x2="31" y2="38" stroke="url(#scaleGold2)" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="10" y1="14" x2="38" y2="14" stroke="url(#scaleGold2)" stroke-width="1" stroke-linecap="round"/>
+              <line x1="10" y1="14" x2="8" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="10" y1="14" x2="12" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M5 24 Q10 28 15 24" stroke="#c8b89a" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <line x1="5" y1="24" x2="15" y2="24" stroke="#c8b89a" stroke-width="0.6" stroke-linecap="round"/>
+              <line x1="38" y1="14" x2="36" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+              <line x1="38" y1="14" x2="40" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+              <path d="M33 22 Q38 26 43 22" stroke="#8B1A2E" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <line x1="33" y1="22" x2="43" y2="22" stroke="#8B1A2E" stroke-width="0.6" stroke-linecap="round"/>
+              <circle cx="24" cy="14" r="1.5" fill="#c8b89a"/>
+              <circle cx="24" cy="8" r="1.2" fill="#8B1A2E"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <!-- Para agregar tu foto: <img src="foto.jpg" alt="BAVM" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;"> -->
+    </div>
+    <div class="about-img-caption"><span>BAVM &mdash; Abogado</span><span>Santiago, Chile</span></div>
+  </div>
+  <div>
+    <div class="reveal">
+      <p class="section-num">04 &mdash; Perfil</p>
+      <h2 class="section-title">Formacion y<br/><em>experiencia</em></h2>
+    </div>
+    <div class="about-body reveal">
+      <p>Abogado egresado de la <strong>Universidad Diego Portales</strong>, con Magister en Derecho en la <strong>Universidad de Valparaiso</strong>. Trato directo, estrategia clara, reserva total.</p>
+      <ul class="edu-list">
+        <li class="edu-item"><span class="edu-year"></span><div><div class="edu-title">Abogado</div><div class="edu-place">Universidad Diego Portales</div></div></li>
+        <li class="edu-item"><span class="edu-year">(c)</span><div><div class="edu-title">Magister en Derecho</div><div class="edu-place">Universidad de Valparaiso</div></div></li>
+      </ul>
+      <p style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid-gray);margin-top:2.5rem;margin-bottom:1rem;">Experiencia</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(255,255,255,0.07);margin-bottom:0.5rem;">
+        <div style="padding:1.2rem 1.4rem;border-right:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);">
+          <div style="font-size:0.82rem;color:var(--white);margin-bottom:3px;">Asesoria y representacion</div>
+          <div style="font-size:0.75rem;color:var(--mid-gray);font-weight:300;line-height:1.6;">DEM, municipalidades, ministerios, servicios publicos e instituciones privadas, entre otras.</div>
+        </div>
+        <div style="padding:1.2rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.07);">
+          <div style="font-size:0.82rem;color:var(--white);margin-bottom:3px;">Oficina Internacional</div>
+          <div style="font-size:0.75rem;color:var(--mid-gray);font-weight:300;">Corporacion de Asistencia Judicial, Region Metropolitana</div>
+        </div>
+        <div style="padding:1.2rem 1.4rem;border-right:1px solid rgba(255,255,255,0.07);">
+          <div style="font-size:0.82rem;color:var(--white);margin-bottom:3px;">Tramitacion Internacional</div>
+          <div style="font-size:0.75rem;color:var(--mid-gray);font-weight:300;">Poder Judicial de Chile</div>
+        </div>
+        <div style="padding:1.2rem 1.4rem;">
+          <div style="font-size:0.82rem;color:var(--white);margin-bottom:3px;">Abogado independiente</div>
+          <div style="font-size:0.75rem;color:var(--mid-gray);font-weight:300;">Santiago Centro &mdash; Lastarria</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 30 Q200 55 400 25 Q600 0 800 30 Q1000 55 1200 30" stroke="rgba(200,184,154,0.06)" stroke-width="0.7" fill="none"/><circle cx="600" cy="30" r="3" fill="rgba(139,26,46,0.15)"/></svg></div>
+
+<!-- TRABAJOS -->
+<section id="trabajos">
+  <div class="section-header reveal">
+    <p class="section-num">05 &mdash; Trabajos</p>
+    <h2 class="section-title">Escritos y<br/><em>publicaciones</em></h2>
+    <p class="section-sub">Reflexiones academicas y trabajos de investigacion. Sin pretension de autoridad — solo rigor y honestidad intelectual.</p>
+  </div>
+  <div class="trabajos-grid" style="grid-template-columns:1fr;">
+    <div class="trabajo-card reveal">
+      <span class="trabajo-tag">Tesis &mdash; Pregrado &mdash; Universidad Diego Portales</span>
+      <div class="trabajo-title">Efectos deseados y aquellos indeseados en casinos de juego, analisis a la luz de la tecnica de regulacion economica Comando y Control</div>
+      <p class="trabajo-desc">Analisis de la Ley 19.995 desde la perspectiva de la regulacion economica. El trabajo examina tanto los efectos buscados por el legislador como aquellos no previstos que emergen de la aplicacion de la tecnica de Comando y Control al mercado concesionado de casinos de juego en Chile.</p>
+    </div>
+  </div>
+</section>
+
+<div class="art-divider" aria-hidden="true"><svg viewBox="0 0 1200 60" preserveAspectRatio="none"><path d="M0 20 L400 40 L800 15 L1200 38" stroke="rgba(200,184,154,0.05)" stroke-width="0.6" fill="none"/></svg></div>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="section-header reveal">
+    <p class="section-num">06 &mdash; Contacto</p>
+    <h2 class="section-title">Cuentame<br/><em>tu caso</em></h2>
+    <p class="section-sub">Primera consulta sin costo. Respuesta en 24 horas habiles.</p>
+  </div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <p class="contact-manifesto">Cada situacion es <em>unica.</em><br/>Escucho antes de opinar.</p>
+      <div>
+        <div class="contact-row"><span class="contact-row-label">Correo profesional</span><a href="mailto:bavmunozlegal@gmail.com" class="contact-row-value">bavmunozlegal@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Correo alternativo</span><a href="mailto:bavmunoz@gmail.com" class="contact-row-value">bavmunoz@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Agenda online</span><a href="https://calendly.com/bavmunozlegal" class="contact-row-value" target="_blank">calendly.com/bavmunozlegal</a></div>
+        <div class="contact-row"><span class="contact-row-label">Instagram</span><a href="https://www.instagram.com/bavm04/" class="contact-row-value" target="_blank">@bavm04</a></div>
+        <div class="contact-row"><span class="contact-row-label">LinkedIn</span><a href="https://www.linkedin.com/in/bastian-andre-vasquez-mu%C3%B1oz-20a241268/" class="contact-row-value" target="_blank">Bastian Vasquez</a></div>
+        <div class="contact-row"><span class="contact-row-label">Ubicacion</span><span class="contact-row-value">Santiago Centro &mdash; presencial y remoto</span></div>
+      </div>
+      <a href="https://calendly.com/bavmunozlegal" class="btn-main" target="_blank" style="display:inline-flex;align-items:center;gap:12px;margin-top:2.5rem;text-decoration:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agendar consulta
+      </a>
+    </div>
+    <div class="reveal">
+      <div id="formBlockedMsg" class="form-blocked">
+        Ya utilizaste tu primera consulta gratuita con este correo o RUT.<br/>
+        Para una nueva consulta, escribeme directamente por WhatsApp o correo.
+      </div>
+      <form class="contact-form" id="contactForm" onsubmit="handleForm(event)">
+        <div class="form-row">
+          <div class="form-field"><label>Nombre</label><input type="text" name="nombre" placeholder="Tu nombre completo" required/></div>
+          <div class="form-field"><label>RUT</label><input type="text" name="rut" placeholder="12.345.678-9" required/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Correo</label><input type="email" name="email" placeholder="tu@correo.cl" required/></div>
+          <div class="form-field"><label>Telefono</label><input type="tel" name="tel" placeholder="+56 9 XXXX XXXX"/></div>
+        </div>
+        <div class="form-field"><label>Area</label>
+          <select name="area">
+            <option value="">Seleccionar...</option>
+            <option>Derecho Civil</option>
+            <option>Prescripcion de Deuda</option>
+            <option>Tutela Laboral / Despido</option>
+            <option>Derecho de Familia</option>
+            <option>Derecho Sucesorio</option>
+            <option>Derecho de Educacion</option>
+            <option>Sumario Administrativo</option>
+            <option>Derecho Corporativo</option>
+            <option>Posesion efectiva</option>
+            <option>Compraventa / CBR</option>
+            <option>No se como clasificarlo</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Tu situacion</label><textarea name="mensaje" placeholder="Cuentame brevemente que esta pasando. En tus palabras, sin tecnicismos." required></textarea></div>
+        <button type="submit" class="form-submit">Enviar consulta</button>
+        <p class="form-success" id="formOk">&mdash; Consulta recibida. Te escribo pronto. &mdash;</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- BUZON DE SUGERENCIAS -->
+<section id="buzon">
+  <div class="section-header reveal">
+    <p class="section-num">07 &mdash; Buzon</p>
+    <h2 class="section-title">Tu <em>opinion</em><br/>importa</h2>
+  </div>
+  <div class="buzon-grid">
+    <div class="buzon-intro reveal">
+      <h3>Escribe<br/><em>sin filtros.</em></h3>
+      <p>Sugerencias, criticas o comentarios. No requiere identificacion.</p>
+    </div>
+    <div class="reveal">
+      <form class="buzon-form contact-form" id="buzonForm" onsubmit="handleBuzon(event)">
+        <div class="form-field"><label>Tipo de mensaje</label>
+          <select name="tipo">
+            <option value="">Seleccionar...</option>
+            <option>Sugerencia</option>
+            <option>Critica</option>
+            <option>Comentario</option>
+            <option>Felicitacion</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Tu mensaje</label><textarea name="mensaje" placeholder="Escribe aqui..." required style="min-height:120px;"></textarea></div>
+        <div class="form-field"><label>Nombre (opcional)</label><input type="text" name="nombre" placeholder="Puedes dejar esto en blanco"/></div>
+        <button type="submit" class="form-submit">Enviar sugerencia</button>
+        <p class="form-success" id="buzonOk">&mdash; Mensaje recibido. Gracias. &mdash;</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>&copy; 2026 BAVM &mdash; Abogado. Santiago, Chile.</p>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/bavm04/" target="_blank">Instagram</a>
+    <a href="https://www.linkedin.com/in/bastian-andre-vasquez-mu%C3%B1oz-20a241268/" target="_blank">LinkedIn</a>
+    <a href="mailto:bavmunozlegal@gmail.com">Correo</a>
+    <a href="#inicio">&uarr; Inicio</a>
+  </div>
+</footer>
+
+<script>
+// NAV scroll
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',window.scrollY>60));
+
+// Reveal
+const ro=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*80);ro.unobserve(e.target);}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+
+// Urgencia modal
+function openUrgencia(){document.getElementById('urgenciaOverlay').classList.add('open');}
+function closeUrgencia(){document.getElementById('urgenciaOverlay').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeUrgencia();});
+
+// Service tabs
+function switchStab(id,btn){
+  document.querySelectorAll('.stab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('stab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Calendario
+let calDate=new Date();
+const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+// Dias adicionales ocupados rotativos por semana (marketing)
+// Lunes siempre ocupado (dia=1). Dia extra rota segun semana del año.
+function getWeekNumber(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const dayNum=d.getUTCDay()||7;
+  d.setUTCDate(d.getUTCDate()+4-dayNum);
+  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
+// Dias rotativos: jueves, viernes, miercoles, martes (en esa rotacion semanal)
+const DIAS_EXTRA=[4,5,3,2]; // 0=dom,1=lun,2=mar,3=mie,4=jue,5=vie
+function isAutoOccupied(date){
+  const dow=date.getDay();
+  if(dow===1) return true; // Lunes siempre
+  const wn=getWeekNumber(date);
+  const extraDow=DIAS_EXTRA[wn%DIAS_EXTRA.length];
+  return dow===extraDow;
+}
+
+function renderCal(){
+  const occ=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  document.getElementById('calMonth').textContent=MESES[m]+' '+y;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  DIAS.forEach(d=>{const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el);});
+  const first=new Date(y,m,1).getDay();
+  for(let i=0;i<first;i++){const el=document.createElement('div');el.className='cal-day empty';el.textContent='·';grid.appendChild(el);}
+  const days=new Date(y,m+1,0).getDate();
+  const today=new Date();
+  for(let d=1;d<=days;d++){
+    const el=document.createElement('div');
+    const key=y+'-'+(m+1)+'-'+d;
+    const dateObj=new Date(y,m,d);
+    const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
+    const isOcc=occ.includes(key)||isAutoOccupied(dateObj);
+    el.className='cal-day'+(isToday?' today':'')+(isOcc?' occupied':' available');
+    el.textContent=d;
+    grid.appendChild(el);
+  }
+}
+function calNav(d){calDate=new Date(calDate.getFullYear(),calDate.getMonth()+d,1);renderCal();}
+renderCal();
+
+// Formulario contacto con registro unico
+function handleForm(e){
+  e.preventDefault();
+  const data=new FormData(e.target);
+  const rut=(data.get('rut')||'').trim().toLowerCase().replace(/[\.\-\s]/g,'');
+  const email=(data.get('email')||'').trim().toLowerCase();
+  const usados=JSON.parse(localStorage.getItem('bavm_primera_consulta')||'[]');
+  if(usados.includes(rut)||usados.includes(email)){
+    e.target.style.display='none';
+    document.getElementById('formBlockedMsg').style.display='block';
+    return;
+  }
+  const btn=e.target.querySelector('.form-submit');
+  btn.textContent='Enviando...';btn.disabled=true;
+  const consultas=JSON.parse(localStorage.getItem('bavm_consultas')||'[]');
+  consultas.push({
+    nombre:data.get('nombre'),rut:data.get('rut'),email:email,
+    tel:data.get('tel')||'',area:data.get('area')||'',
+    mensaje:data.get('mensaje'),
+    fecha:new Date().toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+    read:false,primeraConsulta:true
+  });
+  localStorage.setItem('bavm_consultas',JSON.stringify(consultas));
+  usados.push(rut);if(email&&!usados.includes(email))usados.push(email);
+  localStorage.setItem('bavm_primera_consulta',JSON.stringify(usados));
+  setTimeout(()=>{e.target.style.opacity='0.3';e.target.style.pointerEvents='none';document.getElementById('formOk').style.display='block';},1000);
+}
+
+// Buzon de sugerencias
+function handleBuzon(e){
+  e.preventDefault();
+  const data=new FormData(e.target);
+  const buzones=JSON.parse(localStorage.getItem('bavm_buzones')||'[]');
+  buzones.push({
+    tipo:data.get('tipo'),mensaje:data.get('mensaje'),
+    nombre:data.get('nombre')||'Anonimo',
+    fecha:new Date().toLocaleDateString('es-CL',{day:'numeric',month:'short',year:'numeric'})
+  });
+  localStorage.setItem('bavm_buzones',JSON.stringify(buzones));
+  const btn=e.target.querySelector('.form-submit');
+  btn.textContent='Enviando...';btn.disabled=true;
+  setTimeout(()=>{e.target.style.opacity='0.3';e.target.style.pointerEvents='none';document.getElementById('buzonOk').style.display='block';},800);
+}
+
+// Paralaje hero
+const heroArt=document.querySelector('.hero-art');
+if(heroArt){
+  let tx=0,ty=0,cx=0,cy=0;
+  document.addEventListener('mousemove',e=>{tx=(e.clientX/window.innerWidth-0.5)*18;ty=(e.clientY/window.innerHeight-0.5)*10;});
+  (function animate(){cx+=(tx-cx)*0.05;cy+=(ty-cy)*0.05;heroArt.style.transform=`translate(${cx}px,${cy}px)`;requestAnimationFrame(animate);})();
+}
+</script>
 </body>
 </html>
