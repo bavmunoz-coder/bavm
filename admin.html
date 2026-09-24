@@ -322,11 +322,11 @@
               </div>
               <div class="ai-field">
                 <label>Título profesional</label>
-                <input type="text" id="p_titulo" value="Abogado, Universidad Diego Portales. Magíster en Derecho, Universidad de Valparaíso."/>
+                <input type="text" id="p_titulo" value="Abogado, Universidad Diego Portales. Magíster (c) en Derecho, Universidad de Valparaíso."/>
               </div>
               <div class="ai-field">
                 <label>Áreas de práctica</label>
-                <input type="text" id="p_areas" value="Derecho Civil, Derecho de Familia, Derecho Laboral, Derecho Corporativo, Defensa Penal"/>
+                <input type="text" id="p_areas" value="Derecho Civil, Prescripción de Deuda, Derecho de Familia, Derecho Sucesorio, Tutela Laboral y Despido Injustificado, Derecho de Educación, Sumarios Administrativos, Derecho Corporativo"/>
               </div>
               <div class="ai-field">
                 <label>Estilo de comunicación</label>
@@ -342,11 +342,11 @@
               </div>
               <div class="ai-field">
                 <label>Lo que NO haces o dices</label>
-                <textarea id="p_limites" placeholder="Ej: No prometes resultados garantizados, no das opiniones políticas...">No garantizo resultados. No doy consejos definitivos sin revisar los antecedentes del caso. No hablo mal de colegas ni de tribunales. No cobro consultas iniciales.</textarea>
+                <textarea id="p_limites" placeholder="Ej: No prometes resultados garantizados, no das opiniones políticas...">No garantizo resultados. No doy consejos definitivos sin revisar los antecedentes del caso. No hablo mal de colegas ni de tribunales. La primera consulta es sin costo.</textarea>
               </div>
               <div class="ai-field">
                 <label>Información de contacto para derivar</label>
-                <input type="text" id="p_contacto" value="WhatsApp +56973937184 o correo bavmunoz@gmail.com"/>
+                <input type="text" id="p_contacto" value="Correo bavmunozlegal@gmail.com (primera consulta sin costo) o bavmunoz@gmail.com (alternativo)"/>
               </div>
               <button class="ai-save-profile" onclick="saveProfile()">Guardar perfil</button>
               <p class="ai-status" id="profileStatus">— Perfil guardado correctamente —</p>
@@ -368,8 +368,8 @@
             <div class="ai-quick-btns">
               <button class="quick-btn" onclick="quickSend('¿Cuáles son tus honorarios?')">Honorarios</button>
               <button class="quick-btn" onclick="quickSend('¿Cómo funciona la primera consulta?')">Primera consulta</button>
-              <button class="quick-btn" onclick="quickSend('Tengo un problema laboral con mi empleador, ¿me puedes ayudar?')">Caso laboral</button>
-              <button class="quick-btn" onclick="quickSend('¿Atiendes causas penales?')">Causas penales</button>
+              <button class="quick-btn" onclick="quickSend('Tengo un problema con mi empleador, ¿puedo hacer una tutela laboral?')">Caso laboral</button>
+              <button class="quick-btn" onclick="quickSend('¿Puedo extinguir una deuda por prescripción?')">Prescripción deuda</button>
               <button class="quick-btn" onclick="quickSend('¿Cómo me contacto contigo?')">Contacto</button>
               <button class="quick-btn" onclick="clearChat()">Limpiar chat</button>
             </div>
@@ -406,7 +406,7 @@
                 <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Tribunal</label><input type="text" id="trib_tribunal" placeholder="Ej: 1er Juzgado Civil de Santiago" style="background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;"/></div>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">
-                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);border-right:1px solid var(--border);"><label>Materia / Area</label><select id="trib_area" style="background:var(--charcoal);border:none;color:var(--light-gray);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;-webkit-appearance:none;"><option value="">Seleccionar...</option><option>Civil</option><option>Familia</option><option>Laboral</option><option>Penal</option><option>Corporativo</option><option>Educacion</option><option>Adm. Publico</option></select></div>
+                <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);border-right:1px solid var(--border);"><label>Materia / Area</label><select id="trib_area" style="background:var(--charcoal);border:none;color:var(--light-gray);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;-webkit-appearance:none;"><option value="">Seleccionar...</option><option>Civil</option><option>Prescripcion de Deuda</option><option>Familia</option><option>Sucesorio</option><option>Tutela Laboral / Despido</option><option>Educacion</option><option>Sumarios Adm.</option><option>Corporativo</option></select></div>
                 <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Experiencia</label><select id="trib_exp" style="background:var(--charcoal);border:none;color:var(--light-gray);font-family:var(--sans);font-size:0.85rem;padding:0.4rem 0 1rem;outline:none;width:100%;-webkit-appearance:none;"><option value="positiva">Positiva</option><option value="neutra">Neutra</option><option value="compleja">Compleja</option></select></div>
               </div>
               <div class="form-field" style="padding:0 1rem;border-bottom:1px solid var(--border);"><label>Observaciones personales</label><textarea id="trib_obs" placeholder="Notas sobre estilo, preferencias, criterios que aplica..." style="background:transparent;border:none;color:var(--white);font-family:var(--sans);font-size:0.82rem;padding:0.4rem 0 1rem;outline:none;width:100%;resize:none;min-height:70px;line-height:1.6;"></textarea></div>
