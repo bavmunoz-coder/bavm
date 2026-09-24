@@ -33,13 +33,20 @@
 
     /* Avatar */
     .avatar{
-      width:88px;height:88px;border-radius:50%;
-      background:var(--charcoal);border:1px solid rgba(200,184,154,0.2);
+      width:96px;height:96px;
       display:flex;align-items:center;justify-content:center;
-      font-family:var(--serif);font-size:2rem;color:rgba(200,184,154,0.15);
-      margin-bottom:1.5rem;overflow:hidden;position:relative;
+      margin-bottom:1.5rem;position:relative;
     }
-    .avatar img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;}
+    .avatar-ring{
+      position:absolute;inset:0;border-radius:50%;
+      background:conic-gradient(from 0deg, var(--burgundy) 0%, var(--accent) 40%, var(--burgundy) 70%, var(--accent) 100%);
+      padding:1.5px;
+    }
+    .avatar-ring-inner{
+      width:100%;height:100%;border-radius:50%;
+      background:var(--black);display:flex;align-items:center;justify-content:center;
+    }
+    .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;position:absolute;top:0;left:0;}
 
     /* Nombre */
     .profile-name{
@@ -97,12 +104,12 @@
     .link-arrow{font-size:0.75rem;color:var(--mid-gray);transition:color 0.3s;}
     .link-item:hover .link-arrow{color:var(--accent);}
 
-    /* WhatsApp especial */
-    .link-wa{border-color:rgba(37,211,102,0.2);}
-    .link-wa .link-icon{background:rgba(37,211,102,0.06);}
-    .link-wa .link-icon svg{stroke:#25D366;}
-    .link-wa:hover{border-color:rgba(37,211,102,0.4);}
-    .link-wa .link-label{color:#25D366;}
+    /* Primer correo — destacado con acento dorado */
+    .link-email{border-color:rgba(200,184,154,0.25);}
+    .link-email .link-icon{background:rgba(200,184,154,0.08);}
+    .link-email .link-icon svg{stroke:var(--accent);}
+    .link-email:hover{border-color:rgba(200,184,154,0.5);}
+    .link-email .link-label{color:var(--accent);}
 
     /* Especialidades tags */
     .tags{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2rem;}
@@ -144,14 +151,46 @@
 
   <!-- Avatar -->
   <div class="avatar">
-    ⚖
+    <div class="avatar-ring">
+      <div class="avatar-ring-inner">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="scaleGold" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#8B1A2E"/>
+              <stop offset="55%" stop-color="#c8b89a"/>
+              <stop offset="100%" stop-color="#8B1A2E"/>
+            </linearGradient>
+          </defs>
+          <!-- Base / pedestal -->
+          <line x1="24" y1="8" x2="24" y2="38" stroke="url(#scaleGold)" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="17" y1="38" x2="31" y2="38" stroke="url(#scaleGold)" stroke-width="1.2" stroke-linecap="round"/>
+          <!-- Travesaño superior -->
+          <line x1="10" y1="14" x2="38" y2="14" stroke="url(#scaleGold)" stroke-width="1" stroke-linecap="round"/>
+          <!-- Cadenas izquierda -->
+          <line x1="10" y1="14" x2="8" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+          <line x1="10" y1="14" x2="12" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+          <!-- Platillo izquierdo -->
+          <path d="M5 24 Q10 28 15 24" stroke="#c8b89a" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <line x1="5" y1="24" x2="15" y2="24" stroke="#c8b89a" stroke-width="0.6" stroke-linecap="round"/>
+          <!-- Cadenas derecha -->
+          <line x1="38" y1="14" x2="36" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+          <line x1="38" y1="14" x2="40" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+          <!-- Platillo derecho (levemente más alto = en equilibrio dinámico) -->
+          <path d="M33 22 Q38 26 43 22" stroke="#8B1A2E" stroke-width="1" fill="none" stroke-linecap="round"/>
+          <line x1="33" y1="22" x2="43" y2="22" stroke="#8B1A2E" stroke-width="0.6" stroke-linecap="round"/>
+          <!-- Punto central -->
+          <circle cx="24" cy="14" r="1.5" fill="#c8b89a"/>
+          <circle cx="24" cy="8" r="1.2" fill="#8B1A2E"/>
+        </svg>
+      </div>
+    </div>
     <!-- Reemplaza con: <img src="foto.jpg" alt="BAVM"> -->
   </div>
 
   <!-- Nombre y título -->
   <h1 class="profile-name"><span class="gold">BAV</span><span class="burg">M</span></h1>
   <p class="profile-title">Abogado &mdash; Santiago, Chile</p>
-  <p class="profile-bio">Asesoría legal en derecho civil, laboral, familia y corporativo. Magíster en Derecho, Universidad de Valparaíso.</p>
+  <p class="profile-bio">Asesoría legal en derecho civil, laboral, familia y corporativo. Magíster (c) en Derecho, Universidad de Valparaíso.</p>
 
   <div class="divider"></div>
 
@@ -160,21 +199,21 @@
     <span class="tag">Civil</span>
     <span class="tag">Familia</span>
     <span class="tag">Laboral</span>
+    <span class="tag">Sucesorio</span>
     <span class="tag">Corporativo</span>
-    <span class="tag">Penal</span>
     <span class="tag">Online</span>
   </div>
 
   <!-- Links -->
   <div class="links">
 
-    <a href="https://wa.me/56973937184" class="link-item link-wa" target="_blank">
+    <a href="mailto:bavmunozlegal@gmail.com?subject=Primera%20consulta&body=Hola%2C%20quisiera%20agendar%20una%20primera%20consulta." class="link-item link-email" target="_blank">
       <div class="link-icon">
-        <svg class="filled" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.803 9.803 0 0 1-4.992-1.365l-.358-.212-3.71.89.906-3.624-.232-.374A9.803 9.803 0 0 1 2.182 12C2.182 6.56 6.56 2.182 12 2.182S21.818 6.56 21.818 12 17.44 21.818 12 21.818z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       </div>
       <div class="link-text">
-        <span class="link-label">WhatsApp</span>
-        <span class="link-desc">Consulta directa — primera consulta sin costo</span>
+        <span class="link-label">Primera consulta</span>
+        <span class="link-desc">bavmunozlegal@gmail.com — sin costo</span>
       </div>
       <span class="link-arrow">↗</span>
     </a>
@@ -184,41 +223,30 @@
         <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
       </div>
       <div class="link-text">
-        <span class="link-label">Correo</span>
+        <span class="link-label">Correo alternativo</span>
         <span class="link-desc">bavmunoz@gmail.com</span>
       </div>
       <span class="link-arrow">↗</span>
     </a>
 
-    <a href="index.html" class="link-item">
+    <a href="https://bavmunoz-coder.github.io/bavm/" class="link-item" target="_blank">
       <div class="link-icon">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       </div>
       <div class="link-text">
         <span class="link-label">Sitio web</span>
-        <span class="link-desc">Servicios, perfil y formulario de contacto</span>
+        <span class="link-desc">Servicios, agenda y formulario de contacto</span>
       </div>
       <span class="link-arrow">↗</span>
     </a>
 
-    <a href="https://www.linkedin.com/in/tuperfil" class="link-item" target="_blank">
+    <a href="https://www.linkedin.com/in/bastian-andre-vasquez-mu%C3%B1oz-20a241268/" class="link-item" target="_blank">
       <div class="link-icon">
         <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
       </div>
       <div class="link-text">
         <span class="link-label">LinkedIn</span>
         <span class="link-desc">Perfil profesional y trayectoria</span>
-      </div>
-      <span class="link-arrow">↗</span>
-    </a>
-
-    <a href="https://www.instagram.com/tuperfil" class="link-item" target="_blank">
-      <div class="link-icon">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      </div>
-      <div class="link-text">
-        <span class="link-label">Instagram</span>
-        <span class="link-desc">@tuperfil</span>
       </div>
       <span class="link-arrow">↗</span>
     </a>
