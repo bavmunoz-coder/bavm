@@ -119,7 +119,8 @@
     .services-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid rgba(255,255,255,0.1);margin-top:0;}
     .service-card{background:var(--black);padding:2.5rem 2rem 3rem;transition:background 0.4s;border-right:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);position:relative;}
     .service-card:nth-child(3n){border-right:none;}
-    .service-card:nth-child(n+4){border-bottom:none;}
+    .service-card:nth-last-child(-n+2){border-bottom:none;}
+    .service-card:nth-last-child(3){border-bottom:none;}
     .service-card::before{content:'';position:absolute;top:0;left:0;width:0;height:2px;background:linear-gradient(to right,var(--burgundy),var(--accent));transition:width 0.5s ease;}
     .service-card:hover{background:var(--charcoal);}
     .service-card:hover::before{width:100%;}
@@ -193,9 +194,7 @@
     .contact-row-label{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--mid-gray);}
     .contact-row-value{font-size:0.88rem;color:var(--light-gray);text-decoration:none;transition:color 0.3s;}
     .contact-row-value:hover{color:var(--accent);}
-    .wa-btn{display:inline-flex;align-items:center;gap:12px;background:#25D366;color:#fff;padding:14px 32px;margin-top:2.5rem;text-decoration:none;font-size:0.75rem;letter-spacing:0.18em;text-transform:uppercase;font-family:var(--sans);font-weight:500;transition:opacity 0.3s;}
-    .wa-btn:hover{opacity:0.85;}
-    .wa-btn svg{width:18px;height:18px;fill:#fff;flex-shrink:0;}
+    /* wa-btn removed — WhatsApp solo en urgencias */
     .contact-form{display:flex;flex-direction:column;gap:0;}
     .form-field{border-bottom:1px solid var(--border);transition:border-color 0.3s;}
     .form-field:focus-within{border-color:var(--border-hover);}
@@ -226,6 +225,15 @@
     .footer-links a{font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--mid-gray);text-decoration:none;transition:color 0.3s;}
     .footer-links a:hover{color:var(--accent);}
 
+    /* SEPARADOR FINO URGENCIAS */
+    .urgencia-divider{height:1px;background:var(--border);margin:1rem 0;}
+
+    /* CAL BTNS */
+    .cal-btn-row{display:flex;flex-direction:column;gap:0.75rem;}
+
+    /* CONTACT CALENDLY */
+    .contact-cta-row{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem;}
+
     /* RESPONSIVE */
     @media(max-width:900px){
       #manifiesto,#sobre-mi,.contact-grid,.buzon-grid,.cal-layout{grid-template-columns:1fr;gap:4rem;}
@@ -251,7 +259,7 @@
       <h2 class="urgencia-title">Urgencia <em>legal</em><br/>24/7</h2>
       <button class="urgencia-close" onclick="closeUrgencia()">&#10005;</button>
     </div>
-    <p class="urgencia-desc">El derecho no tiene horario cuando la situacion lo requiere. Si estas enfrentando una detencion, una notificacion judicial urgente, una medida cautelar o cualquier situacion que no puede esperar hasta el dia siguiente, contactame ahora.</p>
+    <p class="urgencia-desc">Detencion, notificacion urgente, medida cautelar. Si no puede esperar, contactame ahora.</p>
     <div class="urgencia-actions">
       <a href="https://wa.me/56973937184?text=URGENCIA%20LEGAL%3A%20Necesito%20asistencia%20inmediata." class="urgencia-btn primary" target="_blank">
         <div class="urgencia-btn-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
@@ -262,7 +270,7 @@
         <div class="urgencia-btn-text"><span class="urgencia-btn-label" style="color:var(--light-gray);">Llamada directa</span><span class="urgencia-btn-sub">+56 9 7393 7184</span></div>
       </a>
     </div>
-    <p class="urgencia-note">"En derecho, los plazos no esperan. Tampoco yo."</p>
+    <p class="urgencia-note">"En derecho, los plazos no esperan. Tampoco yo."<br/><span style="display:block;margin-top:0.5rem;font-style:normal;font-size:0.7rem;letter-spacing:0.1em;">bavmunozlegal@gmail.com</span></p>
   </div>
 </div>
 
@@ -317,23 +325,20 @@
     <span class="hero-scroll-hint">Scroll</span>
   </div>
   <div class="hero-main">
-    <p class="hero-pretitle">Abogado &middot; Magister en Derecho &middot; UDP &mdash; U. de Valparaiso</p>
+    <p class="hero-pretitle">Abogado &middot; Santiago, Chile</p>
     <h1>Tu problema<br/>legal tiene<br/><em>solucion.</em></h1>
-    <p class="hero-subtitle">Asesoria directa en derecho civil, familia, sucesorio, laboral y corporativo. Cada consulta es tratada con rigor tecnico y absoluta reserva profesional.</p>
+    <p class="hero-subtitle">Asesoria en derecho civil, familia, sucesorio, laboral y corporativo. Rigor tecnico, reserva total.</p>
     <div class="hero-actions">
-      <a href="https://wa.me/56973937184" class="btn-main" target="_blank">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
-        Consulta por WhatsApp
-      </a>
-      <a href="#contacto" class="btn-ghost">Enviar consulta &rarr;</a>
+      <a href="#contacto" class="btn-main">Primera consulta gratuita &rarr;</a>
+      <a href="https://calendly.com/bavmunozlegal" class="btn-ghost" target="_blank">Agendar hora &rarr;</a>
     </div>
     <div class="hero-divider">
       <div class="hero-stats">
         <div class="stat"><div class="stat-n">Civil</div><div class="stat-l">Familia &middot; Sucesorio</div></div>
-        <div class="stat"><div class="stat-n">Laboral</div><div class="stat-l">Corporativo &middot; Educacion</div></div>
+        <div class="stat"><div class="stat-n">Laboral</div><div class="stat-l">Tutela &middot; Corporativo</div></div>
         <div class="stat"><div class="stat-n">Online</div><div class="stat-l">Todo Chile</div></div>
       </div>
-      <p class="hero-note">"Primera consulta sin costo. Respuesta dentro de 24 horas habiles."</p>
+      <p class="hero-note">"Primera consulta sin costo."</p>
     </div>
   </div>
 </section>
@@ -351,16 +356,14 @@
   </svg>
   <div style="position:relative;z-index:1;" class="reveal">
     <p class="section-num">01 &mdash; Filosofia</p>
-    <blockquote class="manifiesto-quote">El derecho no es para juzgar,<br/>es para <em>proteger.</em></blockquote>
+    <blockquote class="manifiesto-quote">El derecho es para <em>proteger.</em></blockquote>
   </div>
   <div class="manifiesto-text reveal" style="position:relative;z-index:1;">
-    <p>La integridad profesional no significa seguir solo los casos faciles. Significa comprometerse con cada persona que llega con un problema real, sin importar cuan complejo o delicado sea.</p>
-    <p><strong>Cada caso merece el mismo nivel de rigor, dedicacion y respeto.</strong> Eso implica escuchar antes de opinar, preparar antes de actuar, y ser honesto sobre las posibilidades reales desde el primer dia.</p>
+    <p>Escucho antes de opinar. Preparo antes de actuar. Y soy honesto sobre las posibilidades reales desde el primer dia.</p>
     <ul class="values-list">
       <li>Confidencialidad absoluta</li>
       <li>Apertura frente a cualquier tipo de caso</li>
-      <li>Comunicacion directa, sin tecnicismos innecesarios</li>
-      <li>Estrategia legal clara desde el primer dia</li>
+      <li>Comunicacion directa y sin tecnicismos</li>
       <li>Honorarios transparentes</li>
     </ul>
   </div>
@@ -373,7 +376,7 @@
   <div class="section-header reveal">
     <p class="section-num">02 &mdash; Servicios</p>
     <h2 class="section-title">Areas de<br/><em>practica</em></h2>
-    <p class="section-sub">Asesoria en materias que afectan a personas reales. Cada caso tiene una via legal — encontremosla juntos.</p>
+    <p class="section-sub">Cada caso tiene una via legal — encontremosla juntos.</p>
   </div>
   <div class="services-tabs">
     <button class="stab active" onclick="switchStab('materias',this)">Materias de derecho</button>
@@ -384,12 +387,14 @@
   <!-- Tab 1: Materias -->
   <div class="stab-panel active" id="stab-materias">
     <div class="services-grid">
-      <div class="service-card reveal"><div class="service-num">01</div><h3>Derecho Civil</h3><p>Contratos, obligaciones, responsabilidad extracontractual, arrendamientos y cobro de deudas entre particulares.</p><span class="service-tag">Civil</span></div>
-      <div class="service-card reveal"><div class="service-num">02</div><h3>Derecho de Familia</h3><p>Divorcios, tuicion, regimen de visitas, alimentos, union civil y regulacion de relacion directa y regular.</p><span class="service-tag">Familia</span></div>
-      <div class="service-card reveal"><div class="service-num">03</div><h3>Derecho Sucesorio</h3><p>Herencias, posesion efectiva, testamentos, particion de bienes y acuerdos entre herederos.</p><span class="service-tag">Sucesorio</span></div>
-      <div class="service-card reveal"><div class="service-num">04</div><h3>Derecho de Educacion</h3><p>Derechos de estudiantes, sumarios academicos, recursos contra instituciones educacionales y Superintendencia de Educacion.</p><span class="service-tag">Educacion</span></div>
-      <div class="service-card reveal"><div class="service-num">05</div><h3>Sumarios Administrativos</h3><p>Defensa en procedimientos disciplinarios en el sector publico. Funcionarios de planta, contrata y honorarios.</p><span class="service-tag">Adm. Publico</span></div>
-      <div class="service-card reveal"><div class="service-num">06</div><h3>Derecho Corporativo</h3><p>Constitucion de empresas, pactos de accionistas, contratos comerciales y asesoria a startups y pymes.</p><span class="service-tag">Corporativo</span></div>
+      <div class="service-card reveal"><div class="service-num">01</div><h3>Derecho Civil</h3><p>Contratos, arrendamientos, responsabilidad contractual y extracontractual, cobro de deudas.</p><span class="service-tag">Civil</span></div>
+      <div class="service-card reveal"><div class="service-num">02</div><h3>Prescripcion de Deuda</h3><p>Extincion de obligaciones por el transcurso del tiempo. Analisis de viabilidad y defensa frente a cobranzas prejudiciales y judiciales.</p><span class="service-tag">Civil</span></div>
+      <div class="service-card reveal"><div class="service-num">03</div><h3>Derecho de Familia</h3><p>Divorcios, tuicion, alimentos, regimen de visitas y union civil.</p><span class="service-tag">Familia</span></div>
+      <div class="service-card reveal"><div class="service-num">04</div><h3>Derecho Sucesorio</h3><p>Herencias, posesion efectiva, testamentos y particion de bienes.</p><span class="service-tag">Sucesorio</span></div>
+      <div class="service-card reveal"><div class="service-num">05</div><h3>Tutela Laboral &amp; Despido</h3><p>Despido injustificado, tutela de derechos fundamentales, acoso laboral y acciones ante la Inspeccion del Trabajo.</p><span class="service-tag">Laboral</span></div>
+      <div class="service-card reveal"><div class="service-num">06</div><h3>Derecho de Educacion</h3><p>Sumarios academicos, recursos contra instituciones y Superintendencia de Educacion.</p><span class="service-tag">Educacion</span></div>
+      <div class="service-card reveal"><div class="service-num">07</div><h3>Sumarios Administrativos</h3><p>Defensa en procedimientos disciplinarios del sector publico. Funcionarios de planta, contrata y honorarios.</p><span class="service-tag">Adm. Publico</span></div>
+      <div class="service-card reveal"><div class="service-num">08</div><h3>Derecho Corporativo</h3><p>Constitucion de empresas, contratos comerciales y asesoria a pymes.</p><span class="service-tag">Corporativo</span></div>
     </div>
   </div>
 
@@ -411,8 +416,8 @@
   <div class="stab-panel" id="stab-consulta">
     <div class="consulta-libre-panel reveal">
       <h3>No sabes como <em>clasificarlo.</em></h3>
-      <p>No todos los problemas vienen con etiqueta juridica. Si tienes una situacion que no sabes donde encuadrar, cuéntamela directamente. Identificamos juntos que area del derecho aplica, si tu caso tiene viabilidad legal y cuales son los pasos concretos a seguir.</p>
-      <p>Sin tecnicismos, sin juicios previos. La primera consulta es sin costo.</p>
+      <p>No todos los problemas vienen con etiqueta juridica. Si no sabes donde encuadrar tu situacion, cuéntamela. Identificamos juntos que area aplica y cuales son los pasos a seguir.</p>
+      <p>Sin tecnicismos. Primera consulta sin costo.</p>
       <a href="#contacto" class="btn-main" style="display:inline-flex;">Cuéntame tu caso &rarr;</a>
     </div>
   </div>
@@ -444,15 +449,21 @@
     </div>
     <div class="cal-info reveal">
       <h3>Agenda tu <em>consulta</em></h3>
-      <p>Las consultas presenciales se realizan en Santiago Centro. Las consultas online estan disponibles para todo Chile via videollamada o WhatsApp.</p>
+      <p>Presencial en Santiago Centro u online para todo Chile.</p>
       <ul class="cal-horarios">
         <li><span>Lunes a jueves</span><span>9:00 &mdash; 19:00</span></li>
         <li><span>Viernes</span><span>9:00 &mdash; 13:00</span></li>
-        <li><span>Urgencias</span><span>24/7 via WhatsApp</span></li>
+        <li><span>Urgencias</span><span>24/7</span></li>
       </ul>
-      <a href="https://wa.me/56973937184?text=Hola,%20quiero%20agendar%20una%20consulta." class="btn-main" target="_blank" style="display:inline-flex;">
-        Agendar por WhatsApp
-      </a>
+      <div style="display:flex;flex-direction:column;gap:0.8rem;">
+        <a href="https://calendly.com/bavmunozlegal" class="btn-main" target="_blank" style="display:inline-flex;align-items:center;gap:10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Agendar hora &rarr;
+        </a>
+        <a href="mailto:bavmunozlegal@gmail.com?subject=Solicitud%20de%20hora&body=Hola,%20quisiera%20agendar%20una%20consulta." class="btn-ghost" style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+          Agendar por correo &rarr;
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -480,12 +491,12 @@
       <h2 class="section-title">Formacion y<br/><em>experiencia</em></h2>
     </div>
     <div class="about-body reveal">
-      <p>Abogado egresado de la <strong>Universidad Diego Portales</strong>, con estudios de Magister en Derecho en la <strong>Universidad de Valparaiso</strong>. Me desempeno en materias civiles, sucesorias, laborales, familiares y corporativas, con enfoque practico y orientado a resultados.</p>
-      <p>Cada persona que llega a consulta merece informacion clara, estrategia real y un trato respetuoso, independientemente de la naturaleza de su caso o de su nivel de conocimiento sobre el derecho.</p>
+      <p>Abogado egresado de la <strong>Universidad Diego Portales</strong>, con Magister en Derecho en la <strong>Universidad de Valparaiso</strong>. Materias civiles, sucesorias, laborales, familiares y corporativas.</p>
+      <p>Informacion clara, estrategia real, trato directo. Independientemente de la naturaleza del caso.</p>
       <ul class="edu-list">
-        <li class="edu-item"><span class="edu-year">[XXXX]</span><div><div class="edu-title">Licenciatura en Ciencias Juridicas</div><div class="edu-place">Universidad Diego Portales</div></div></li>
-        <li class="edu-item"><span class="edu-year">En curso</span><div><div class="edu-title">Magister en Derecho</div><div class="edu-place">Universidad de Valparaiso</div></div></li>
-        <li class="edu-item"><span class="edu-year">Hoy</span><div><div class="edu-title">Ejercicio libre de la profesion</div><div class="edu-place">Santiago Centro &mdash; presencial y remoto</div></div></li>
+        <li class="edu-item"><span class="edu-year"></span><div><div class="edu-title">Abogado</div><div class="edu-place">Universidad Diego Portales</div></div></li>
+        <li class="edu-item"><span class="edu-year">(c)</span><div><div class="edu-title">Magister en Derecho</div><div class="edu-place">Universidad de Valparaiso</div></div></li>
+        <li class="edu-item"><span class="edu-year">Hoy</span><div><div class="edu-title">Abogado</div><div class="edu-place">Santiago Centro &mdash; Lastarria</div></div></li>
       </ul>
     </div>
   </div>
@@ -498,21 +509,22 @@
   <div class="section-header reveal">
     <p class="section-num">05 &mdash; Contacto</p>
     <h2 class="section-title">Cuentame<br/><em>tu caso</em></h2>
-    <p class="section-sub">Primera consulta sin costo, una vez por persona. Respuesta dentro de 24 horas habiles.</p>
+    <p class="section-sub">Primera consulta sin costo. Respuesta en 24 horas habiles.</p>
   </div>
   <div class="contact-grid">
     <div class="reveal">
       <p class="contact-manifesto">Cada situacion es <em>unica.</em><br/>Escucho antes de opinar.</p>
       <div>
-        <div class="contact-row"><span class="contact-row-label">WhatsApp</span><a href="https://wa.me/56973937184" class="contact-row-value" target="_blank">+56 9 7393 7184</a></div>
-        <div class="contact-row"><span class="contact-row-label">Correo</span><a href="mailto:bavmunozlegal@gmail.com" class="contact-row-value">bavmunozlegal@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Correo profesional</span><a href="mailto:bavmunozlegal@gmail.com" class="contact-row-value">bavmunozlegal@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Correo alternativo</span><a href="mailto:bavmunoz@gmail.com" class="contact-row-value">bavmunoz@gmail.com</a></div>
+        <div class="contact-row"><span class="contact-row-label">Agenda online</span><a href="https://calendly.com/bavmunozlegal" class="contact-row-value" target="_blank">calendly.com/bavmunozlegal</a></div>
         <div class="contact-row"><span class="contact-row-label">Instagram</span><a href="https://www.instagram.com/bavm04/" class="contact-row-value" target="_blank">@bavm04</a></div>
         <div class="contact-row"><span class="contact-row-label">LinkedIn</span><a href="https://www.linkedin.com/in/bastian-andre-vasquez-mu%C3%B1oz-20a241268/" class="contact-row-value" target="_blank">Bastian Vasquez</a></div>
         <div class="contact-row"><span class="contact-row-label">Ubicacion</span><span class="contact-row-value">Santiago Centro &mdash; presencial y remoto</span></div>
       </div>
-      <a href="https://wa.me/56973937184" class="wa-btn" target="_blank">
-        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12 0C5.373 0 0 5.373 0 12c0 2.128.554 4.12 1.524 5.847L.057 23.95a.5.5 0 0 0 .614.614l6.115-1.466A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
-        Escribir ahora
+      <a href="https://calendly.com/bavmunozlegal" class="btn-main" target="_blank" style="display:inline-flex;align-items:center;gap:12px;margin-top:2.5rem;text-decoration:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Agendar consulta
       </a>
     </div>
     <div class="reveal">
@@ -533,6 +545,8 @@
           <select name="area">
             <option value="">Seleccionar...</option>
             <option>Derecho Civil</option>
+            <option>Prescripcion de Deuda</option>
+            <option>Tutela Laboral / Despido</option>
             <option>Derecho de Familia</option>
             <option>Derecho Sucesorio</option>
             <option>Derecho de Educacion</option>
@@ -560,7 +574,7 @@
   <div class="buzon-grid">
     <div class="buzon-intro reveal">
       <h3>Escribe<br/><em>sin filtros.</em></h3>
-      <p>Si tienes una sugerencia, una critica, o simplemente quieres comentar algo sobre el servicio o el sitio, este es el espacio. No requiere identificacion. Tu anonimato esta garantizado.</p>
+      <p>Sugerencias, criticas o comentarios. No requiere identificacion.</p>
     </div>
     <div class="reveal">
       <form class="buzon-form contact-form" id="buzonForm" onsubmit="handleBuzon(event)">
@@ -620,6 +634,25 @@ function switchStab(id,btn){
 let calDate=new Date();
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DIAS=['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+// Dias adicionales ocupados rotativos por semana (marketing)
+// Lunes siempre ocupado (dia=1). Dia extra rota segun semana del año.
+function getWeekNumber(date){
+  const d=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate()));
+  const dayNum=d.getUTCDay()||7;
+  d.setUTCDate(d.getUTCDate()+4-dayNum);
+  const yearStart=new Date(Date.UTC(d.getUTCFullYear(),0,1));
+  return Math.ceil((((d-yearStart)/86400000)+1)/7);
+}
+// Dias rotativos: jueves, viernes, miercoles, martes (en esa rotacion semanal)
+const DIAS_EXTRA=[4,5,3,2]; // 0=dom,1=lun,2=mar,3=mie,4=jue,5=vie
+function isAutoOccupied(date){
+  const dow=date.getDay();
+  if(dow===1) return true; // Lunes siempre
+  const wn=getWeekNumber(date);
+  const extraDow=DIAS_EXTRA[wn%DIAS_EXTRA.length];
+  return dow===extraDow;
+}
+
 function renderCal(){
   const occ=JSON.parse(localStorage.getItem('bavm_ocupados')||'[]');
   const y=calDate.getFullYear(),m=calDate.getMonth();
@@ -634,8 +667,9 @@ function renderCal(){
   for(let d=1;d<=days;d++){
     const el=document.createElement('div');
     const key=y+'-'+(m+1)+'-'+d;
+    const dateObj=new Date(y,m,d);
     const isToday=today.getFullYear()===y&&today.getMonth()===m&&today.getDate()===d;
-    const isOcc=occ.includes(key);
+    const isOcc=occ.includes(key)||isAutoOccupied(dateObj);
     el.className='cal-day'+(isToday?' today':'')+(isOcc?' occupied':' available');
     el.textContent=d;
     grid.appendChild(el);
