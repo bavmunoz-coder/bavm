@@ -115,10 +115,42 @@
     .tags{display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2rem;}
     .tag{
       font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
-      color:var(--mid-gray);border:1px solid var(--border);
-      padding:4px 10px;transition:all 0.3s;
+      color:var(--light-gray);
+      border:1px solid transparent;
+      background:linear-gradient(var(--black),var(--black)) padding-box,
+                 linear-gradient(to right,#C0272D,var(--accent)) border-box;
+      padding:4px 10px;
+      position:relative;overflow:hidden;
+      transition:color 0.35s;
     }
-    .tag:hover{color:var(--accent);border-color:rgba(200,184,154,0.3);}
+    .tag::before{
+      content:'';
+      position:absolute;inset:0;
+      background:linear-gradient(to right,rgba(139,26,46,0.18),rgba(200,184,154,0.12));
+      transform:scaleX(0);transform-origin:left;
+      transition:transform 0.35s ease;
+      z-index:0;
+    }
+    .tag:hover::before{transform:scaleX(1);}
+    .tag:hover{color:var(--accent);}
+    .tag span,.tag{z-index:1;position:relative;}
+    .tag-accent{
+      color:var(--light-gray);
+      background:linear-gradient(var(--black),var(--black)) padding-box,
+                 linear-gradient(to right,#C0272D,var(--accent)) border-box;
+      position:relative;overflow:hidden;
+      transition:color 0.35s;
+    }
+    .tag-accent::before{
+      content:'';
+      position:absolute;inset:0;
+      background:linear-gradient(to right,rgba(139,26,46,0.18),rgba(200,184,154,0.12));
+      transform:scaleX(0);transform-origin:left;
+      transition:transform 0.35s ease;
+      z-index:0;
+    }
+    .tag-accent:hover::before{transform:scaleX(1);}
+    .tag-accent:hover{color:var(--accent);}
 
     /* Footer */
     .profile-footer{
@@ -195,13 +227,18 @@
   <div class="divider"></div>
 
   <!-- Especialidades -->
-  <div class="tags">
-    <span class="tag">Civil</span>
-    <span class="tag">Familia</span>
-    <span class="tag">Laboral</span>
-    <span class="tag">Sucesorio</span>
-    <span class="tag">Corporativo</span>
-    <span class="tag">Online</span>
+  <div class="tags" style="flex-direction:column;align-items:center;gap:0.6rem;">
+    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;">
+      <span class="tag">Civil</span>
+      <span class="tag">Familia</span>
+      <span class="tag">Laboral</span>
+      <span class="tag">Sucesorio</span>
+      <span class="tag">Corporativo</span>
+    </div>
+    <div style="display:flex;gap:0.5rem;justify-content:center;">
+      <span class="tag tag-accent">Asesoría</span>
+      <span class="tag tag-accent">Online</span>
+    </div>
   </div>
 
   <!-- Links -->
