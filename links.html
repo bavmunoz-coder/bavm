@@ -11,15 +11,21 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --black:#0a0a0a;--charcoal:#1c1c1c;--border:rgba(255,255,255,0.08);
-      --border-hover:rgba(255,255,255,0.18);--white:#f5f2ee;--mid-gray:#666;
-      --light-gray:#aaa;--accent:#c8b89a;--burgundy:#8B1A2E;
+      --border-hover:rgba(255,255,255,0.18);--white:#f5f2ee;--mid-gray:#858585;
+      --light-gray:#aaa;--accent:#c8b89a;--burgundy:#8B1A2E;--burgundy-text:#b1263f;--burgundy-small:#e63755;
       --serif:'Playfair Display',Georgia,serif;--sans:'Syne',sans-serif;
     }
     html{scroll-behavior:smooth;}
     body{
-      font-family:var(--sans);background:var(--black);color:var(--white);
+      font-family:var(--sans);color:var(--white);
       min-height:100vh;display:flex;align-items:center;justify-content:center;
       padding:40px 20px;position:relative;overflow-x:hidden;
+      background-color:var(--black);
+      background-image:
+        radial-gradient(1400px 900px at 85% 0%,rgba(200,184,154,0.055),transparent 60%),
+        repeating-linear-gradient(115deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0.032) 70px,rgba(255,255,255,0.055) 110px,rgba(255,255,255,0.032) 150px,rgba(255,255,255,0) 220px,rgba(255,255,255,0) 340px),
+        linear-gradient(160deg,#060605 0%,#0d0c0b 50%,#050505 100%);
+      background-attachment:fixed;background-size:cover;
     }
     /* Fondo artístico */
     .bg-art{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
@@ -53,8 +59,8 @@
       font-family:var(--serif);font-size:1.6rem;font-weight:400;
       letter-spacing:0.04em;margin-bottom:0.4rem;text-align:center;
     }
-    .profile-name .gold{color:var(--accent);}
-    .profile-name .burg{color:var(--burgundy);}
+    .profile-name .gold{color:var(--accent);filter:brightness(1.18);}
+    .profile-name .burg{color:var(--burgundy-text);}
     .profile-title{
       font-size:0.7rem;letter-spacing:0.22em;text-transform:uppercase;
       color:var(--mid-gray);margin-bottom:0.6rem;text-align:center;
@@ -156,8 +162,14 @@
     .profile-footer{
       font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;
       color:rgba(255,255,255,0.15);text-align:center;margin-top:1rem;
+      display:flex;align-items:center;justify-content:center;gap:8px;
     }
-    .profile-footer span{color:var(--burgundy);}
+    .profile-footer span{color:var(--accent);}
+    .profile-seal{display:flex;align-items:center;justify-content:center;gap:10px;opacity:0.7;margin-top:1.6rem;text-align:center;}
+    .profile-seal svg{filter:brightness(1.35) saturate(0.85);}
+    .profile-seal .sig-word{font-family:var(--serif);font-size:1rem;font-weight:500;letter-spacing:0.04em;}
+    .profile-seal .sig-word .gold{color:var(--accent);font-style:normal;}
+    .profile-seal .sig-word .burg{color:var(--burgundy-small);font-style:normal;}
   </style>
 </head>
 <body>
@@ -288,6 +300,46 @@
       <span class="link-arrow">↗</span>
     </a>
 
+  </div>
+
+  <div class="profile-seal" aria-hidden="true">
+    <svg width="12" height="30" viewBox="0 0 20 48" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="swordGoldLink" x1="0" y1="0" x2="0" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#c8b89a"/>
+          <stop offset="50%" stop-color="#c8b89a"/>
+          <stop offset="100%" stop-color="#8B1A2E"/>
+        </linearGradient>
+      </defs>
+      <circle cx="10" cy="3" r="2" fill="#c8b89a"/>
+      <line x1="10" y1="5" x2="10" y2="14" stroke="url(#swordGoldLink)" stroke-width="2" stroke-linecap="round"/>
+      <line x1="4" y1="16" x2="16" y2="16" stroke="url(#swordGoldLink)" stroke-width="1.6" stroke-linecap="round"/>
+      <line x1="10" y1="16" x2="10" y2="20" stroke="url(#swordGoldLink)" stroke-width="1.2"/>
+      <path d="M7.6 20 L12.4 20 L10 46 Z" fill="url(#swordGoldLink)"/>
+    </svg>
+    <span class="sig-word"><em class="gold">BAV</em><em class="burg">M</em></span>
+    <svg width="34" height="34" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="scaleGoldLink" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#8B1A2E"/>
+          <stop offset="55%" stop-color="#c8b89a"/>
+          <stop offset="100%" stop-color="#8B1A2E"/>
+        </linearGradient>
+      </defs>
+      <line x1="24" y1="8" x2="24" y2="38" stroke="url(#scaleGoldLink)" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="17" y1="38" x2="31" y2="38" stroke="url(#scaleGoldLink)" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="10" y1="14" x2="38" y2="14" stroke="url(#scaleGoldLink)" stroke-width="1" stroke-linecap="round"/>
+      <line x1="10" y1="14" x2="8" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+      <line x1="10" y1="14" x2="12" y2="24" stroke="#c8b89a" stroke-width="0.8" stroke-linecap="round"/>
+      <path d="M5 24 Q10 28 15 24" stroke="#c8b89a" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <line x1="5" y1="24" x2="15" y2="24" stroke="#c8b89a" stroke-width="0.6" stroke-linecap="round"/>
+      <line x1="38" y1="14" x2="36" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+      <line x1="38" y1="14" x2="40" y2="22" stroke="#8B1A2E" stroke-width="0.8" stroke-linecap="round"/>
+      <path d="M33 22 Q38 26 43 22" stroke="#8B1A2E" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <line x1="33" y1="22" x2="43" y2="22" stroke="#8B1A2E" stroke-width="0.6" stroke-linecap="round"/>
+      <circle cx="24" cy="14" r="1.5" fill="#c8b89a"/>
+      <circle cx="24" cy="8" r="1.2" fill="#8B1A2E"/>
+    </svg>
   </div>
 
   <p class="profile-footer">BAVM &nbsp;<span>·</span>&nbsp; Abogado &nbsp;<span>·</span>&nbsp; Santiago, Chile</p>
